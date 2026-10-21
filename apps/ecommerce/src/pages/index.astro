@@ -1,0 +1,2838 @@
+---
+// apps/ecommerce/src/pages/index.astro
+const title = "Tasty Bites | Fast Food Gourmet & Hamburguesas de Autor";
+
+// 1. Featured Popular Menu (Exact cards from the reference design)
+const popularDishes = [
+  {
+    id: "pop-1",
+    name: "Margherita Pizza",
+    category: "Combos",
+    badge: "Popular",
+    badgeType: "hot",
+    price: 12.99,
+    displayPrice: "$12.99",
+    altPrice: "₹ 249",
+    rating: 4.9,
+    reviews: 1240,
+    calories: "820 kcal",
+    prepTime: "12-15 min",
+    image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&auto=format&fit=crop&q=80",
+    description: "Fresh tomatoes, mozzarella, with a hint of basil on stone-baked crust.",
+    ingredients: ["Salsa de Tomate San Marzano", "Queso Mozzarella de Búfala Fundido", "Hojas de Albahaca Fresca", "Aceite de Oliva Extra Virgen", "Masa Madre Fermentada 48h"],
+    pairing: "Refresco Artesanal de Limón & Menta"
+  },
+  {
+    id: "pop-2",
+    name: "Classic Burger",
+    category: "Burgers",
+    badge: "Best Seller",
+    badgeType: "gold",
+    price: 9.99,
+    displayPrice: "$9.99",
+    altPrice: "₹ 199",
+    rating: 4.8,
+    reviews: 980,
+    calories: "650 kcal",
+    prepTime: "8-10 min",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&auto=format&fit=crop&q=80",
+    description: "Juicy patty, fresh veggies, our special sauce.",
+    ingredients: ["Carne de Res Seleccionada 180g", "Doble Cheddar Fundido", "Pepinillos Agridulces", "Lechuga Romana & Tomate", "Emulsión Imperial Secreta"],
+    pairing: "Papas Fritas Clásicas & Cola Artesanal"
+  },
+  {
+    id: "pop-3",
+    name: "French Fries",
+    category: "Sides",
+    badge: "Crispy",
+    badgeType: "gold",
+    price: 4.99,
+    displayPrice: "$4.99",
+    altPrice: "₹ 129",
+    rating: 4.9,
+    reviews: 840,
+    calories: "380 kcal",
+    prepTime: "5-7 min",
+    image: "https://images.unsplash.com/photo-1576107232684-1279f3908594?w=800&auto=format&fit=crop&q=80",
+    description: "Crispy, golden and absolutely delicious.",
+    ingredients: ["Papas Rústicas de Corte Grueso", "Sal Marina Ahumada", "Romero & Especias Dulces", "Dip de Queso Cheddar Fundido"],
+    pairing: "Cualquiera de nuestras Hamburguesas de Autor"
+  },
+  {
+    id: "pop-4",
+    name: "Chocolate Shake",
+    category: "Desserts",
+    badge: "Sweet Indulgence",
+    badgeType: "purple",
+    price: 5.99,
+    displayPrice: "$5.99",
+    altPrice: "₹ 149",
+    rating: 4.9,
+    reviews: 670,
+    calories: "520 kcal",
+    prepTime: "5 min",
+    image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=800&auto=format&fit=crop&q=80",
+    description: "Rich, creamy and full of chocolatey goodness.",
+    ingredients: ["Helado Artesanal de Chocolate Belga", "Crema Batida Espesa", "Sirope Fudge de Cacao Oscuro", "Virutas de Chocolate & Galleta"],
+    pairing: "El cierre dulce perfecto para cualquier combo"
+  }
+];
+
+// 2. Categories for the circular carousel ("Something for Every Craving")
+const cravingCategories = [
+  { id: "Burgers", name: "Burgers", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&auto=format&fit=crop&q=80", count: 10 },
+  { id: "Loaded Fries", name: "Loaded Fries", image: "https://images.unsplash.com/photo-1576107232684-1279f3908594?w=300&auto=format&fit=crop&q=80", count: 4 },
+  { id: "Wraps", name: "Wraps", image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=300&auto=format&fit=crop&q=80", count: 3 },
+  { id: "Sides", name: "Sides", image: "https://images.unsplash.com/photo-1639024471285-0afc383457a5?w=300&auto=format&fit=crop&q=80", count: 5 },
+  { id: "Beverages", name: "Beverages", image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=300&auto=format&fit=crop&q=80", count: 4 },
+  { id: "Combos", name: "Combos", image: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=300&auto=format&fit=crop&q=80", count: 6 },
+  { id: "Desserts", name: "Desserts", image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=300&auto=format&fit=crop&q=80", count: 4 }
+];
+
+// 3. Full catalog retaining the existing 10 signature hamburgers from the project
+const burgers = [
+  {
+    id: 1,
+    name: "Rey de las Burgers",
+    category: "Burgers",
+    subCategory: "Especiales de la Casa",
+    badge: "👑 Corona de Oro • Edición Legendaria",
+    badgeClass: "badge-gold",
+    price: 14.99,
+    displayPrice: "$14.99",
+    rating: 4.9,
+    reviews: 1420,
+    calories: "980 kcal",
+    prepTime: "10-12 min",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&auto=format&fit=crop&q=80",
+    description: "Doble medallón de carne Angus Black 100% flameada al carbón de roble, queso cheddar inglés añejado 12 meses, mermelada artesanal de panceta ahumada al bourbon, cebolla caramelizada y salsa secreta Real en pan brioche dorado a la manteca.",
+    ingredients: ["Carne Angus 100% (2 x 150g)", "Cheddar Añejo 12 Meses", "Bacon Jam al Bourbon", "Cebolla Caramelizada", "Pan Brioche Artesanal"],
+    pairing: "Papas Rústicas con Trufa & Cerveza Red Ale"
+  },
+  {
+    id: 2,
+    name: "Burger Real Clásica",
+    category: "Burgers",
+    subCategory: "Clásicas",
+    badge: "⭐ Clásica de Autor",
+    badgeClass: "badge-amber",
+    price: 9.99,
+    displayPrice: "$9.99",
+    rating: 4.8,
+    reviews: 980,
+    calories: "650 kcal",
+    prepTime: "8-10 min",
+    image: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=800&auto=format&fit=crop&q=80",
+    description: "Medallón de res seleccionada a la plancha de hierro fundido, doble loncha de queso cheddar fundido, pepinillos encurtidos en casa con eneldo, lechuga romana crujiente, tomate pera y suave emulsión imperial.",
+    ingredients: ["Carne de Res Seleccionada 180g", "Doble Cheddar Fundido", "Pepinillos Agridulces", "Lechuga Romana & Tomate", "Emulsión Imperial"],
+    pairing: "Papas Fritas Clásicas & Refresco de Cola Artesanal"
+  },
+  {
+    id: 3,
+    name: "Burger Real Doble",
+    category: "Burgers",
+    subCategory: "Especiales de la Casa",
+    badge: "🔥 Doble Impacto",
+    badgeClass: "badge-red",
+    price: 12.50,
+    displayPrice: "$12.50",
+    rating: 4.9,
+    reviews: 1150,
+    calories: "890 kcal",
+    prepTime: "12-14 min",
+    image: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=800&auto=format&fit=crop&q=80",
+    description: "Dos carnes smash con costra caramelizada profunda, cuádruple queso americano extra derretido, panceta crujiente curada al manzano, cebolla frita crocante y salsa barbacoa ahumada artesanal.",
+    ingredients: ["Doble Carne Smash (2 x 120g)", "Cuádruple American Cheese", "Bacon Curado al Manzano", "Crispy Onions", "Salsa BBQ Ahumada"],
+    pairing: "Aros de Cebolla a la Cerveza & Malteada de Vainilla"
+  },
+  {
+    id: 4,
+    name: "Burger Doble Especial",
+    category: "Burgers",
+    subCategory: "Especiales de la Casa",
+    badge: "✨ Edición Especial",
+    badgeClass: "badge-purple",
+    price: 13.50,
+    displayPrice: "$13.50",
+    rating: 4.9,
+    reviews: 860,
+    calories: "920 kcal",
+    prepTime: "12-14 min",
+    image: "https://images.unsplash.com/photo-1583032015879-bf67245d55e5?w=800&auto=format&fit=crop&q=80",
+    description: "Doble blend premium de picaña y asado de tira, queso Monterrey Jack fundido con pimientos asados, huevo de campo frito con yema trufada, jamón serrano crocante y mayonesa de ajo negro.",
+    ingredients: ["Blend Picaña & Asado (2 x 130g)", "Queso Monterrey Jack", "Huevo de Campo a la Plancha", "Jamón Serrano Crujiente", "Alioli de Ajo Negro"],
+    pairing: "Yucas Bravas & Limonada de Maracuyá"
+  },
+  {
+    id: 5,
+    name: "Burger Trufa & Portobello",
+    category: "Burgers",
+    subCategory: "Gourmet",
+    badge: "💎 Gourmet Select",
+    badgeClass: "badge-emerald",
+    price: 15.50,
+    displayPrice: "$15.50",
+    rating: 5.0,
+    reviews: 620,
+    calories: "810 kcal",
+    prepTime: "14-16 min",
+    image: "https://images.unsplash.com/photo-1520072959219-c595dc870360?w=800&auto=format&fit=crop&q=80",
+    description: "Carne madurada Dry-Aged 30 días, sombrero de hongo Portobello glaseado al vino tinto, queso suizo Emmental gratinado y untuosa mayonesa de trufas negras silvestres del Piamonte.",
+    ingredients: ["Carne Dry-Aged 30 Días 200g", "Portobello al Vino Tinto", "Queso Emmental Gratinado", "Rúcula Fresca", "Mayonesa de Trufa Negra"],
+    pairing: "Papas con Parmesano & Copa de Vino Cabernet"
+  },
+  {
+    id: 6,
+    name: "Burger Crispy Smokehouse",
+    category: "Burgers",
+    subCategory: "Pollo & Crispy",
+    badge: "🍗 Pollo Crujiente",
+    badgeClass: "badge-orange",
+    price: 11.99,
+    displayPrice: "$11.99",
+    rating: 4.7,
+    reviews: 740,
+    calories: "740 kcal",
+    prepTime: "10-12 min",
+    image: "https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?w=800&auto=format&fit=crop&q=80",
+    description: "Suprema de pechuga campera marinada 24 horas en buttermilk y pimentón ahumado, rebozada en copos crujientes, ensalada fresca coleslaw de repollo morado y miel picante habanero-maple.",
+    ingredients: ["Pechuga de Pollo Crujiente 180g", "Coleslaw de Repollo Morado", "Miel Picante Habanero-Maple", "Pepinillos Caseros", "Pan Brioche Sésamo"],
+    pairing: "Camotes Fritos & Cerveza Rubia Pilsner"
+  },
+  {
+    id: 7,
+    name: "Burger BBQ Bourbon Flame",
+    category: "Burgers",
+    subCategory: "Especiales de la Casa",
+    badge: "🔥 Ahumada a la Leña",
+    badgeClass: "badge-red",
+    price: 13.99,
+    displayPrice: "$13.99",
+    rating: 4.8,
+    reviews: 580,
+    calories: "860 kcal",
+    prepTime: "12-15 min",
+    image: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=800&auto=format&fit=crop&q=80",
+    description: "Medallón de res ahumado pacientemente con virutas de roble, aros de cebolla artesanalmente rebozados a la cerveza rubia, queso provolone fundido y generoso glaseado barbacoa bourbon ahumado.",
+    ingredients: ["Carne Ahumada al Roble 190g", "Provolone Fundido", "Aros de Cebolla Crocantes", "Glaseado BBQ Bourbon", "Bacon Ahumado"],
+    pairing: "Papas Rústicas Especiadas & Té Helado al Limón"
+  },
+  {
+    id: 8,
+    name: "Burger Bacon Cheese Deluxe",
+    category: "Burgers",
+    subCategory: "Clásicas",
+    badge: "🥓 Favorita Clásica",
+    badgeClass: "badge-amber",
+    price: 10.99,
+    displayPrice: "$10.99",
+    rating: 4.8,
+    reviews: 910,
+    calories: "720 kcal",
+    prepTime: "8-10 min",
+    image: "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=800&auto=format&fit=crop&q=80",
+    description: "180g de carne jugosa a la parrilla, triple tira de tocino ahumado de corte grueso extra crocante, quesos gouda y cheddar fundidos al vapor, cebolla morada macerada y mostaza antigua en grano.",
+    ingredients: ["Carne de Res Parrillera 180g", "Triple Bacon Grueso Crocante", "Mix Cheddar & Gouda", "Cebolla Morada Macerada", "Mostaza Dijon en Grano"],
+    pairing: "Papas Criss-Cut & Gaseosa Artesanal"
+  },
+  {
+    id: 9,
+    name: "Burger Guacamole & Chipotle",
+    category: "Burgers",
+    subCategory: "Especiales de la Casa",
+    badge: "🥑 Fusión Picante",
+    badgeClass: "badge-emerald",
+    price: 12.99,
+    displayPrice: "$12.99",
+    rating: 4.7,
+    reviews: 490,
+    calories: "780 kcal",
+    prepTime: "10-12 min",
+    image: "https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=800&auto=format&fit=crop&q=80",
+    description: "Carne a la parrilla sobre cama de guacamole rústico con toque de lima fresca y cilantro, totopos crocantes de maíz, queso fundido flameado y mayonesa ahumada al chile chipotle morita.",
+    ingredients: ["Carne a la Parrilla 180g", "Guacamole Fresco Artesanal", "Totopos de Maíz Crujientes", "Queso Flameado", "Alioli de Chipotle Morita"],
+    pairing: "Nachos con Salsa Cheddar & Cerveza Mexicana"
+  },
+  {
+    id: 10,
+    name: "Burger Green Garden Truffle",
+    category: "Burgers",
+    subCategory: "Vegetariana",
+    badge: "🌱 100% Plant-Based",
+    badgeClass: "badge-green",
+    price: 11.50,
+    displayPrice: "$11.50",
+    rating: 4.8,
+    reviews: 380,
+    calories: "590 kcal",
+    prepTime: "10-12 min",
+    image: "https://images.unsplash.com/photo-1525059696034-4967a8e1dca2?w=800&auto=format&fit=crop&q=80",
+    description: "Medallón artesanal a base de lentejas francesas, quinoa andina y setas salteadas, queso vegetal cremoso ahumado, hojas de rúcula silvestre, tomate seco italiano y crema suave de trufa en pan rústico.",
+    ingredients: ["Medallón Quinoa, Lenteja & Hongos", "Queso Vegano Ahumado", "Rúcula & Tomates Secos", "Crema Suave de Trufa", "Pan Rústico Multicereal"],
+    pairing: "Ensalada Verde de Huerto & Agua de Jamaica Artesanal"
+  }
+];
+
+// Additional items to populate all categories seamlessly
+const extraCategoryDishes = [
+  {
+    id: "side-2",
+    name: "Loaded Bacon Truffle Fries",
+    category: "Loaded Fries",
+    badge: "Crispy Delight",
+    badgeClass: "badge-amber",
+    price: 7.99,
+    displayPrice: "$7.99",
+    rating: 4.9,
+    reviews: 510,
+    calories: "620 kcal",
+    prepTime: "8 min",
+    image: "https://images.unsplash.com/photo-1585109649139-366815a0d713?w=800&auto=format&fit=crop&q=80",
+    description: "Papas rústicas bañadas en queso cheddar fundido, bits crocantes de bacon y un toque aromático de aceite de trufa blanca.",
+    ingredients: ["Papas Fritas Rústicas", "Queso Cheddar Artesanal", "Bacon Ahumado Crocante", "Cebollín Fresco", "Aceite de Trufa Blanca"],
+    pairing: "Malteada de Vainilla o Cerveza IPA"
+  },
+  {
+    id: "wrap-1",
+    name: "Crispy Chicken Caesar Wrap",
+    category: "Wraps",
+    badge: "Fresh & Tasty",
+    badgeClass: "badge-green",
+    price: 8.99,
+    displayPrice: "$8.99",
+    rating: 4.8,
+    reviews: 430,
+    calories: "540 kcal",
+    prepTime: "7-9 min",
+    image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=800&auto=format&fit=crop&q=80",
+    description: "Tiernas tiras de pollo crispy envueltas en tortilla de trigo con lechuga romana fresca, queso parmesano y aderezo Caesar casero.",
+    ingredients: ["Pollo Rebozado Crujiente", "Tortilla de Trigo Tostada", "Parmesano Reggiano", "Lechuga Romana", "Aderezo Caesar de Autor"],
+    pairing: "Té Helado al Limón"
+  },
+  {
+    id: "side-3",
+    name: "Golden Beer Onion Rings",
+    category: "Sides",
+    badge: "Crunchy",
+    badgeClass: "badge-gold",
+    price: 5.50,
+    displayPrice: "$5.50",
+    rating: 4.7,
+    reviews: 320,
+    calories: "410 kcal",
+    prepTime: "6 min",
+    image: "https://images.unsplash.com/photo-1639024471285-0afc383457a5?w=800&auto=format&fit=crop&q=80",
+    description: "Aros de cebolla fresca rebozados a mano con cerveza rubia y especias secretas, servidos con salsa barbacoa ahumada.",
+    ingredients: ["Cebollas Dulces Seleccionadas", "Rebozado a la Cerveza Rubia", "Pimentón Dulce", "Salsa BBQ al Bourbon"],
+    pairing: "Cualquier hamburguesa de autor"
+  },
+  {
+    id: "bev-1",
+    name: "Iced Mint Citrus Cooler",
+    category: "Beverages",
+    badge: "Refreshing",
+    badgeClass: "badge-emerald",
+    price: 3.99,
+    displayPrice: "$3.99",
+    rating: 4.9,
+    reviews: 290,
+    calories: "120 kcal",
+    prepTime: "3 min",
+    image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=800&auto=format&fit=crop&q=80",
+    description: "Refrescante infusión de menta silvestre, zumo de lima recién exprimida, hielo frappé y un toque de agave.",
+    ingredients: ["Hojas de Menta Fresca", "Zumo de Lima Natural", "Agua con Gas Mineral", "Hielo Cristalino", "Néctar de Agave"],
+    pairing: "Excelente acompañamiento para platos intensos y ahumados"
+  },
+  {
+    id: "combo-1",
+    name: "Mega Combo Burger Bros",
+    category: "Combos",
+    badge: "Super Ahorro",
+    badgeClass: "badge-red",
+    price: 15.99,
+    displayPrice: "$15.99",
+    rating: 5.0,
+    reviews: 890,
+    calories: "1150 kcal",
+    prepTime: "10-12 min",
+    image: "https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=800&auto=format&fit=crop&q=80",
+    description: "Doble cheeseburger artesanal + papas rústicas crujientes + vaso grande de refresco helado con hielo y limón.",
+    ingredients: ["Burger Doble Smash Angus", "Papas Fritas Medianas", "Bebida a Elección 500ml", "Dips de Queso y Salsa de la Casa"],
+    pairing: "¡Todo incluido para el almuerzo o cena definitiva!"
+  },
+  {
+    id: "des-2",
+    name: "Oreo Deluxe Shake",
+    category: "Desserts",
+    badge: "Best Dessert",
+    badgeClass: "badge-purple",
+    price: 6.50,
+    displayPrice: "$6.50",
+    rating: 4.9,
+    reviews: 740,
+    calories: "560 kcal",
+    prepTime: "4 min",
+    image: "https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=800&auto=format&fit=crop&q=80",
+    description: "Batido cremoso de galletas Oreo trituradas con helado de vainilla bourbon, nata montada y topping crujiente.",
+    ingredients: ["Galletas Oreo Originales", "Helado de Vainilla Bourbon", "Nata Montada Artesanal", "Fudge de Chocolate Caliente"],
+    pairing: "Felicidad pura en cada cucharada"
+  }
+];
+
+const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content="Tasty Bites & Hamburger Rapid - Food Made with Love. Fast food gourmet, hamburguesas de autor, pizzas artesanales y delivery rápido." />
+  
+  <!-- Google Fonts: Plus Jakarta Sans for modern typography + Caveat for handwritten script / doodles -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Brand Color Palette Replicating the Attached Design */
+      --primary: #F5A623;          /* Warm Golden Yellow / Amber */
+      --primary-hover: #E09612;    /* Darker Amber */
+      --primary-subtle: #FFF8EB;   /* Warm light tint */
+      --primary-dark: #B87309;     /* Deep gold for badges */
+      
+      --accent-red: #E53935;       /* "Popular" Badge Red */
+      --accent-red-hover: #C62828;
+      
+      --dark-bg: #141210;          /* Deep warm charcoal/black for Hero & Dark sections */
+      --dark-surface: #1E1A17;     /* Dark card/banner background */
+      --dark-border: rgba(255, 255, 255, 0.1);
+      
+      --cream-bg: #FAF8F5;         /* Warm cream canvas for menu & light sections */
+      --cream-surface: #FFFFFF;    /* Pure white product cards */
+      --cream-subtle: #F3EFEA;     /* Soft warm grey/beige for containers */
+      --cream-border: #E8E3DC;     /* Elegant soft border */
+      
+      --text-dark: #191614;        /* Headings on light background */
+      --text-muted: #6B655F;       /* Secondary text on light background */
+      --text-light: #FFFFFF;       /* Headings on dark background */
+      --text-light-muted: #C7C2BA; /* Secondary text on dark background */
+      
+      --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-hand: 'Caveat', cursive, sans-serif;
+      
+      --shadow-card: 0 10px 30px -5px rgba(25, 22, 20, 0.07), 0 4px 12px -2px rgba(25, 22, 20, 0.04);
+      --shadow-hover: 0 20px 40px -8px rgba(245, 166, 35, 0.22), 0 8px 16px -2px rgba(25, 22, 20, 0.08);
+      --shadow-gold: 0 8px 24px rgba(245, 166, 35, 0.35);
+      
+      --radius-sm: 10px;
+      --radius-md: 18px;
+      --radius-lg: 26px;
+      --radius-pill: 9999px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--cream-bg);
+      color: var(--text-dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      font-family: inherit;
+      border: none;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ==========================================================================
+       1. HEADER / NAVIGATION (Dark Glassmorphic over Hero)
+       ========================================================================== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(20, 18, 16, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 80px;
+    }
+
+    /* Brand Logo replicating "Tasty Bites" with chef hat icon */
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      text-decoration: none;
+      color: var(--text-light);
+    }
+
+    .brand-logo-icon {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      filter: drop-shadow(0 2px 8px rgba(245, 166, 35, 0.4));
+    }
+
+    .brand-logo-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-logo-name {
+      font-family: var(--font-main);
+      font-weight: 800;
+      font-size: 1.45rem;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: #FFFFFF;
+    }
+
+    .brand-logo-name span {
+      color: var(--primary);
+    }
+
+    .brand-logo-sub {
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-light-muted);
+      font-weight: 600;
+    }
+
+    /* Nav Links */
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #E6E1DA;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: color 0.2s ease;
+      position: relative;
+      padding: 0.3rem 0;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #FFFFFF;
+    }
+
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 2.5px;
+      background: var(--primary);
+      border-radius: 9999px;
+    }
+
+    /* Nav Actions */
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .icon-btn {
+      background: transparent;
+      color: #FFFFFF;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--primary);
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: var(--primary);
+      color: #141210;
+      font-size: 0.72rem;
+      font-weight: 800;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease;
+    }
+
+    /* Primary CTA Buttons */
+    .btn-gold {
+      background: var(--primary);
+      color: #1A1305;
+      font-weight: 700;
+      font-size: 0.92rem;
+      padding: 0.65rem 1.45rem;
+      border-radius: var(--radius-pill);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: var(--shadow-gold);
+    }
+
+    .btn-gold:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(245, 166, 35, 0.45);
+    }
+
+    .btn-gold-sm {
+      padding: 0.5rem 1.15rem;
+      font-size: 0.84rem;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-dark);
+      border: 1.5px solid var(--text-dark);
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 0.5rem 1.25rem;
+      border-radius: var(--radius-pill);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-outline:hover {
+      background: var(--text-dark);
+      color: #FFFFFF;
+      transform: translateY(-1px);
+    }
+
+    /* ==========================================================================
+       2. HERO SECTION (Dark ambiance with prominent Burger & fries)
+       ========================================================================== */
+    .hero-section {
+      background: #141210 radial-gradient(circle at 75% 40%, rgba(245, 166, 35, 0.16) 0%, rgba(20, 18, 16, 0.95) 70%);
+      color: var(--text-light);
+      position: relative;
+      padding: 4.5rem 0 5.5rem;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .hero-tag {
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.25em;
+      color: #D6D0C5;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .hero-tag span {
+      color: var(--primary);
+    }
+
+    .hero-title {
+      font-size: 4.2rem;
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: #FFFFFF;
+      margin-bottom: 1.4rem;
+    }
+
+    .hero-title .script-love {
+      font-family: var(--font-hand);
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 5.6rem;
+      line-height: 0.8;
+      display: inline-block;
+      margin-left: 0.25rem;
+      position: relative;
+    }
+
+    .hero-title .script-love .doodle-heart {
+      display: inline-block;
+      font-size: 2.2rem;
+      transform: rotate(12deg) translateY(-8px);
+      margin-left: 0.3rem;
+      color: var(--primary);
+    }
+
+    .hero-desc {
+      font-size: 1.12rem;
+      color: var(--text-light-muted);
+      line-height: 1.65;
+      max-width: 480px;
+      margin-bottom: 2.25rem;
+    }
+
+    .hero-cta-wrap {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 3.25rem;
+    }
+
+    /* 3 Hero Feature Badges */
+    .hero-features {
+      display: flex;
+      gap: 2.25rem;
+      align-items: center;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .hero-feature-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .hero-feature-icon {
+      color: var(--primary);
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-feature-text {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #E2DDD5;
+      line-height: 1.2;
+    }
+
+    /* Hero Right Visual Column */
+    .hero-visual {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-image-container {
+      position: relative;
+      width: 100%;
+      max-width: 540px;
+      filter: drop-shadow(0 25px 45px rgba(0, 0, 0, 0.65));
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .hero-image-container:hover {
+      transform: scale(1.02);
+    }
+
+    .hero-main-img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      border-radius: 28px;
+      display: block;
+    }
+
+    /* Doodle Annotation: "Best Burger in Town" */
+    .hero-doodle {
+      position: absolute;
+      top: -24px;
+      right: 15px;
+      color: var(--primary);
+      font-family: var(--font-hand);
+      font-size: 1.85rem;
+      font-weight: 700;
+      line-height: 1.1;
+      text-align: center;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6));
+      transform: rotate(6deg);
+    }
+
+    .hero-doodle .sparks {
+      font-size: 1.3rem;
+      letter-spacing: 0.15em;
+      display: block;
+      margin-bottom: -4px;
+    }
+
+    .hero-doodle .arrow {
+      font-size: 2rem;
+      display: block;
+      transform: rotate(50deg) translateX(-10px);
+    }
+
+    /* ==========================================================================
+       3. CATEGORY CAROUSEL / "Something for Every Craving"
+       ========================================================================== */
+    .craving-section {
+      padding: 5rem 0 4rem;
+      background: var(--cream-bg);
+    }
+
+    .section-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 2.5rem;
+    }
+
+    .section-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-red);
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title {
+      font-size: 2.35rem;
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      color: var(--text-dark);
+      line-height: 1.15;
+    }
+
+    .view-all-link {
+      color: var(--text-dark);
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .view-all-link:hover {
+      color: var(--primary-dark);
+      transform: translateX(3px);
+    }
+
+    /* Category Cards Grid */
+    .craving-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1.25rem;
+      overflow-x: auto;
+      padding-bottom: 1rem;
+      scrollbar-width: thin;
+    }
+
+    .craving-card {
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      outline: none;
+    }
+
+    .craving-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .craving-card.active .craving-img-circle {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.25);
+    }
+
+    .craving-img-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid #FFFFFF;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      background: #FFFFFF;
+    }
+
+    .craving-card:hover .craving-img-circle {
+      box-shadow: 0 10px 22px rgba(245, 166, 35, 0.25);
+    }
+
+    .craving-img-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .craving-card:hover .craving-img-circle img {
+      transform: scale(1.1);
+    }
+
+    .craving-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+    }
+
+    /* ==========================================================================
+       4. OUR SPECIALS / "Popular Menu"
+       ========================================================================== */
+    .specials-section {
+      padding: 2rem 0 5rem;
+      background: var(--cream-bg);
+    }
+
+    .specials-label-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .specials-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .specials-dash {
+      width: 32px;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 9999px;
+    }
+
+    .specials-subtitle {
+      color: var(--text-muted);
+      font-size: 1rem;
+      margin-top: 0.4rem;
+      max-width: 580px;
+    }
+
+    /* Product Cards 4-Column Grid */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.75rem;
+      margin-top: 2.5rem;
+    }
+
+    .product-card {
+      background: var(--cream-surface);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--cream-border);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+      position: relative;
+    }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .product-img-wrap {
+      position: relative;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      background: #F4EFEA;
+    }
+
+    .product-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.45s ease;
+    }
+
+    .product-card:hover .product-img-wrap img {
+      transform: scale(1.06);
+    }
+
+    .card-badge-pill {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: var(--accent-red);
+      color: #FFFFFF;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.02em;
+      box-shadow: 0 4px 10px rgba(229, 57, 53, 0.3);
+      z-index: 2;
+    }
+
+    .card-badge-gold {
+      background: #D97706;
+      color: #FFFFFF;
+      box-shadow: 0 4px 10px rgba(217, 119, 6, 0.3);
+    }
+
+    .card-content {
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .product-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 0.45rem;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+
+    .product-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-bottom: 1.25rem;
+      flex-grow: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .product-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      margin-top: auto;
+    }
+
+    .product-price-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+
+    .product-price {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: -0.02em;
+    }
+
+    .product-price small {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-left: 0.35rem;
+    }
+
+    .product-rating {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #D97706;
+    }
+
+    .btn-add-cart {
+      background: var(--primary);
+      color: #1A1305;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 0.65rem 1rem;
+      border-radius: var(--radius-pill);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      transition: all 0.2s ease;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(245, 166, 35, 0.25);
+    }
+
+    .btn-add-cart:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(245, 166, 35, 0.35);
+    }
+
+    .btn-card-details {
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-align: center;
+      padding: 0.2rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .btn-card-details:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+
+    /* Tab Filter for full 10 Author Burgers */
+    .catalog-tabs-wrap {
+      margin-top: 3.5rem;
+      border-top: 1px solid var(--cream-border);
+      padding-top: 3.5rem;
+    }
+
+    .catalog-filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+
+    .catalog-filter-btn {
+      background: var(--cream-surface);
+      border: 1px solid var(--cream-border);
+      padding: 0.55rem 1.25rem;
+      border-radius: var(--radius-pill);
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .catalog-filter-btn:hover {
+      border-color: var(--primary);
+      color: var(--text-dark);
+    }
+
+    .catalog-filter-btn.active {
+      background: var(--text-dark);
+      color: #FFFFFF;
+      border-color: var(--text-dark);
+    }
+
+    /* ==========================================================================
+       5. SPLIT PROMO BANNERS ("COMBO IT BETTER" & "SWEET ENDINGS")
+       ========================================================================== */
+    .promo-banners-section {
+      padding: 2rem 0 5rem;
+      background: var(--cream-bg);
+    }
+
+    .promo-banners-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.75rem;
+    }
+
+    /* Left Banner: Combo it Better (Dark Theme) */
+    .promo-banner-dark {
+      background: #141210;
+      border-radius: var(--radius-lg);
+      padding: 2.75rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #FFFFFF;
+      box-shadow: 0 15px 35px rgba(20, 18, 16, 0.2);
+    }
+
+    .promo-banner-dark::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(245, 166, 35, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .banner-text-col {
+      max-width: 55%;
+      z-index: 2;
+    }
+
+    .banner-title-dark {
+      font-size: 2.4rem;
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .banner-title-dark span {
+      color: var(--primary);
+      display: block;
+    }
+
+    .banner-desc-dark {
+      font-size: 0.95rem;
+      color: #D6D0C5;
+      margin-bottom: 1.6rem;
+      line-height: 1.45;
+      font-weight: 500;
+    }
+
+    .banner-img-col {
+      width: 42%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .banner-img-col img {
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+      display: block;
+      filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5));
+      transition: transform 0.4s ease;
+    }
+
+    .promo-banner-dark:hover .banner-img-col img {
+      transform: scale(1.04) rotate(-1deg);
+    }
+
+    /* Right Banner: Sweet Endings (Light/Cream Theme) */
+    .promo-banner-light {
+      background: #F4EFEA;
+      border-radius: var(--radius-lg);
+      padding: 2.75rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-dark);
+      border: 1px solid var(--cream-border);
+      box-shadow: var(--shadow-card);
+    }
+
+    .banner-title-light {
+      font-size: 2.4rem;
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .banner-desc-light {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 1.6rem;
+      line-height: 1.45;
+      font-weight: 500;
+    }
+
+    /* Doodle for Sweet Endings */
+    .doodle-sweet {
+      position: absolute;
+      top: 18px;
+      right: 25px;
+      font-family: var(--font-hand);
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #141210;
+      line-height: 1.1;
+      text-align: right;
+      z-index: 3;
+      transform: rotate(4deg);
+    }
+
+    .doodle-sweet .arrow-curve {
+      display: block;
+      font-size: 1.6rem;
+      margin-top: -4px;
+      transform: rotate(80deg) scaleX(-1);
+    }
+
+    .promo-banner-light:hover .banner-img-col img {
+      transform: scale(1.04) rotate(1deg);
+    }
+
+    /* ==========================================================================
+       6. VALUE PROPOSITION / TRUST BAR (4 PILLARS)
+       ========================================================================== */
+    .trust-pillars-section {
+      padding: 2rem 0;
+      background: var(--cream-bg);
+      border-top: 1px solid var(--cream-border);
+      border-bottom: 1px solid var(--cream-border);
+    }
+
+    .trust-pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+
+    .trust-pillar-item {
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+      padding: 1rem 1.25rem;
+    }
+
+    .trust-pillar-item:not(:last-child) {
+      border-right: 1px solid var(--cream-border);
+    }
+
+    .pillar-icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+      flex-shrink: 0;
+    }
+
+    .pillar-text h4 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      line-height: 1.2;
+    }
+
+    .pillar-text p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    /* ==========================================================================
+       7. BOTTOM HERO / ORDER BANNER ("Crave It? We'll Deliver It!")
+       ========================================================================== */
+    .bottom-cta-section {
+      padding: 4.5rem 0 5rem;
+      background: var(--cream-bg);
+    }
+
+    .bottom-cta-banner {
+      background: #141210 url('https://images.unsplash.com/photo-1513104890138-7c749659a591?w=1400&auto=format&fit=crop&q=80') center/cover no-repeat;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 25px 50px rgba(20, 18, 16, 0.35);
+    }
+
+    .bottom-cta-overlay {
+      background: linear-gradient(90deg, #141210 0%, rgba(20, 18, 16, 0.92) 48%, rgba(20, 18, 16, 0.4) 100%);
+      padding: 4.5rem 3.75rem;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .bottom-cta-tag {
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #E2DDD5;
+      margin-bottom: 0.75rem;
+    }
+
+    .bottom-cta-headline {
+      font-size: 3.6rem;
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      color: #FFFFFF;
+      margin-bottom: 1.25rem;
+    }
+
+    .bottom-cta-headline .script-crave {
+      font-family: var(--font-hand);
+      color: var(--primary);
+      font-size: 4.5rem;
+      display: block;
+      line-height: 0.9;
+    }
+
+    .bottom-cta-desc {
+      font-size: 1.05rem;
+      color: var(--text-light-muted);
+      line-height: 1.55;
+      max-width: 480px;
+      margin-bottom: 2rem;
+    }
+
+    .bottom-cta-visual {
+      position: relative;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .doodle-vibes {
+      position: absolute;
+      top: -20px;
+      right: 20px;
+      font-family: var(--font-hand);
+      color: #FFFFFF;
+      font-size: 1.9rem;
+      font-weight: 700;
+      line-height: 1.1;
+      text-align: right;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.8));
+      transform: rotate(8deg);
+      z-index: 5;
+    }
+
+    .doodle-vibes span {
+      color: var(--primary);
+    }
+
+    .doodle-vibes .vibe-sparks {
+      font-size: 1.3rem;
+      display: block;
+    }
+
+    /* ==========================================================================
+       8. FOOTER & TRUST BAR
+       ========================================================================== */
+    footer {
+      background: #FAF8F5;
+      border-top: 1px solid var(--cream-border);
+      padding: 3rem 0 2rem;
+    }
+
+    .footer-guarantees {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid var(--cream-border);
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .guarantee-item {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .guarantee-icon {
+      color: var(--primary-dark);
+      font-size: 1.2rem;
+    }
+
+    .footer-bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 2rem;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .social-links {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .social-icon-btn {
+      color: var(--text-dark);
+      font-size: 1.15rem;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .social-icon-btn:hover {
+      color: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .ecosystem-links {
+      display: flex;
+      gap: 1.25rem;
+      font-weight: 600;
+      align-items: center;
+    }
+
+    .ecosystem-links a {
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+
+    .ecosystem-links a:hover {
+      color: var(--text-dark);
+    }
+
+    /* ==========================================================================
+       9. INTERACTIVE CART DRAWER (Slide-in)
+       ========================================================================== */
+    .cart-drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .cart-drawer-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 440px;
+      background: #FFFFFF;
+      box-shadow: -10px 0 30px rgba(0,0,0,0.15);
+      z-index: 2001;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-drawer.active {
+      transform: translateX(0);
+    }
+
+    .cart-drawer-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--cream-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-drawer-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cart-close-btn {
+      background: #F3EFEA;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--text-dark);
+      transition: background 0.2s;
+    }
+
+    .cart-close-btn:hover {
+      background: #E8E3DC;
+    }
+
+    .cart-items-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .cart-item-row {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      background: #FAF8F5;
+      padding: 0.85rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--cream-border);
+    }
+
+    .cart-item-img {
+      width: 64px;
+      height: 64px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .cart-item-details {
+      flex: 1;
+    }
+
+    .cart-item-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      line-height: 1.2;
+    }
+
+    .cart-item-price {
+      font-weight: 800;
+      color: var(--text-dark);
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+    }
+
+    .cart-qty-ctrl {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: #FFFFFF;
+      border: 1px solid var(--cream-border);
+      border-radius: var(--radius-pill);
+      padding: 0.2rem 0.5rem;
+    }
+
+    .qty-btn {
+      background: transparent;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      color: var(--text-dark);
+    }
+
+    .qty-btn:hover {
+      color: var(--primary-dark);
+    }
+
+    .cart-empty-state {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      color: var(--text-muted);
+    }
+
+    .cart-empty-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      opacity: 0.6;
+    }
+
+    .cart-drawer-footer {
+      padding: 1.5rem;
+      border-top: 1px solid var(--cream-border);
+      background: #FAF8F5;
+    }
+
+    .cart-summary-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .cart-total-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: var(--text-dark);
+      padding-top: 0.75rem;
+      border-top: 1px dashed var(--cream-border);
+      margin-bottom: 1.25rem;
+    }
+
+    /* ==========================================================================
+       10. DETAILS MODAL
+       ========================================================================== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 2500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      padding: 1.5rem;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: #FFFFFF;
+      border-radius: 24px;
+      max-width: 580px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      position: relative;
+      transform: translateY(20px) scale(0.96);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-overlay.active .modal-box {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      z-index: 10;
+      cursor: pointer;
+    }
+
+    .modal-image {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+    }
+
+    .modal-body {
+      padding: 1.75rem;
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #141210;
+      color: #FFFFFF;
+      padding: 0.85rem 1.4rem;
+      border-radius: var(--radius-pill);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      border: 1px solid var(--primary);
+      z-index: 3000;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .hero-desc {
+        margin: 0 auto 2rem;
+      }
+      .hero-cta-wrap {
+        justify-content: center;
+      }
+      .hero-features {
+        justify-content: center;
+      }
+      .craving-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .promo-banners-grid {
+        grid-template-columns: 1fr;
+      }
+      .trust-pillars-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .trust-pillar-item:not(:last-child) {
+        border-right: none;
+        border-bottom: 1px solid var(--cream-border);
+      }
+      .bottom-cta-overlay {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 3rem 2rem;
+      }
+      .bottom-cta-desc {
+        margin: 0 auto 2rem;
+      }
+      .bottom-cta-visual {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero-title {
+        font-size: 3rem;
+      }
+      .hero-title .script-love {
+        font-size: 4rem;
+      }
+      .craving-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+      .trust-pillars-grid {
+        grid-template-columns: 1fr;
+      }
+      .nav-links {
+        display: none;
+      }
+      .footer-guarantees {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .bottom-cta-headline {
+        font-size: 2.75rem;
+      }
+      .bottom-cta-headline .script-crave {
+        font-size: 3.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       1. HEADER / NAVBAR
+       ========================================================================== -->
+  <header>
+    <div class="container nav-inner">
+      <!-- Brand Logo -->
+      <a href="#hero" class="brand-logo">
+        <div class="brand-logo-icon">
+          <!-- Chef Hat SVG Icon -->
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/>
+            <line x1="6" y1="17" x2="18" y2="17"/>
+          </svg>
+        </div>
+        <div class="brand-logo-text">
+          <div class="brand-logo-name">Tasty <span>Bites</span></div>
+          <div class="brand-logo-sub">GOOD FOOD • HAPPY MOOD</div>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#hero" class="active">Home</a></li>
+          <li><a href="#menu">Menu</a></li>
+          <li><a href="#specials">About</a></li>
+          <li><a href="#promos">Gallery</a></li>
+          <li><a href="#order-now">Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Nav Actions: Search, Cart, Order Button -->
+      <div class="nav-actions">
+        <!-- Search Button -->
+        <button class="icon-btn" id="searchTriggerBtn" title="Buscar platillos" aria-label="Buscar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+
+        <!-- Cart Button -->
+        <button class="icon-btn" id="cartTriggerBtn" title="Ver carrito" aria-label="Carrito de compras">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span class="cart-badge" id="cartBadgeCount">0</span>
+        </button>
+
+        <!-- Order Now CTA -->
+        <a href="#menu" class="btn-gold" id="headerOrderBtn">
+          <span>Order Now</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       2. HERO SECTION ("Food Made with Love ♡")
+       ========================================================================== -->
+  <section class="hero-section" id="hero">
+    <div class="container hero-grid">
+      <!-- Left Content Column -->
+      <div>
+        <div class="hero-tag">
+          FRESH <span>•</span> TASTY <span>•</span> DELICIOUS
+        </div>
+        <h1 class="hero-title">
+          Food <br />
+          Made with <span class="script-love">Love<span class="doodle-heart">♡</span></span>
+        </h1>
+        <p class="hero-desc">
+          From cheesy pizzas to juicy burgers, we serve the best food made with fresh ingredients and a whole lot of love.
+        </p>
+
+        <div class="hero-cta-wrap">
+          <a href="#menu" class="btn-gold" style="padding: 0.85rem 1.85rem; font-size: 1rem;">
+            <span>Order Now</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+          <a href="/app" class="btn-outline" style="color: #FFFFFF; border-color: rgba(255,255,255,0.3); padding: 0.85rem 1.4rem;">
+            <span>📱 PWA App</span>
+          </a>
+        </div>
+
+        <!-- 3 Feature Badges -->
+        <div class="hero-features">
+          <div class="hero-feature-item">
+            <div class="hero-feature-icon">
+              <!-- Leaf Icon -->
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+              </svg>
+            </div>
+            <div class="hero-feature-text">Fresh<br />Ingredients</div>
+          </div>
+
+          <div class="hero-feature-item">
+            <div class="hero-feature-icon">
+              <!-- Fast Delivery Icon -->
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="3" width="15" height="13"></rect>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+              </svg>
+            </div>
+            <div class="hero-feature-text">Fast<br />Delivery</div>
+          </div>
+
+          <div class="hero-feature-item">
+            <div class="hero-feature-icon">
+              <!-- Shield Check Icon -->
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <path d="m9 12 2 2 4-4"></path>
+              </svg>
+            </div>
+            <div class="hero-feature-text">Hygienic<br />& Safe</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Visual Column (Hero Burger on Wood Board with Fries and Dip) -->
+      <div class="hero-visual">
+        <div class="hero-image-container">
+          <img 
+            class="hero-main-img" 
+            src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=1000&auto=format&fit=crop&q=85" 
+            alt="Signature Gourmet Burger with Golden Fries and Dip" 
+          />
+          <!-- Doodle Annotation: "Best Burger in Town" -->
+          <div class="hero-doodle">
+            <span class="sparks">\ | /</span>
+            <span>Best Burger<br />in Town</span>
+            <span class="arrow">⤷</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       3. CATEGORY CAROUSEL ("Something for Every Craving")
+       ========================================================================== -->
+  <section class="craving-section" id="menu">
+    <div class="container">
+      <div class="section-header-row">
+        <div>
+          <div class="section-label">EXPLORE OUR MENU</div>
+          <h2 class="section-title">Something for Every Craving</h2>
+        </div>
+        <a href="#specials" class="view-all-link">
+          <span>View Full Menu</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+
+      <!-- 7 Circular Categories Replicating the Design -->
+      <div class="craving-grid">
+        {cravingCategories.map((cat, index) => (
+          <button class={`craving-card ${index === 0 ? 'active' : ''}`} data-category={cat.id}>
+            <div class="craving-img-circle">
+              <img src={cat.image} alt={cat.name} loading="lazy" />
+            </div>
+            <span class="craving-name">{cat.name}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       4. OUR SPECIALS / "Popular Menu"
+       ========================================================================== -->
+  <section class="specials-section" id="specials">
+    <div class="container">
+      <div class="section-header-row">
+        <div>
+          <div class="specials-label-row">
+            <span class="specials-label">OUR SPECIALS</span>
+            <span class="specials-dash"></span>
+          </div>
+          <h2 class="section-title">Popular Menu</h2>
+          <p class="specials-subtitle">
+            Explore our most loved dishes, crafted for your taste and happiness.
+          </p>
+        </div>
+        <a href="#author-burgers" class="btn-outline">
+          <span>View Full Menu</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+
+      <!-- 4 Popular Menu Cards from the Design (Margherita Pizza, Classic Burger, French Fries, Chocolate Shake) -->
+      <div class="products-grid">
+        {popularDishes.map((dish) => (
+          <article class="product-card" data-category={dish.category}>
+            <div class="product-img-wrap">
+              {dish.badge && (
+                <span class={`card-badge-pill ${dish.badgeType === 'gold' ? 'card-badge-gold' : ''}`}>
+                  {dish.badge}
+                </span>
+              )}
+              <img src={dish.image} alt={dish.name} loading="lazy" />
+            </div>
+
+            <div class="card-content">
+              <h3 class="product-title">{dish.name}</h3>
+              <p class="product-desc">{dish.description}</p>
+
+              <div class="product-footer">
+                <div class="product-price-row">
+                  <div class="product-price">
+                    {dish.displayPrice}
+                    {dish.altPrice && <small>({dish.altPrice})</small>}
+                  </div>
+                  <div class="product-rating">★ {dish.rating}</div>
+                </div>
+
+                <button 
+                  class="btn-add-cart add-to-cart-btn"
+                  data-id={dish.id}
+                  data-name={dish.name}
+                  data-price={dish.price}
+                  data-img={dish.image}
+                >
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                  </svg>
+                  <span>Add to Cart</span>
+                </button>
+
+                <button 
+                  class="btn-card-details view-detail-trigger"
+                  data-name={dish.name}
+                  data-price={dish.displayPrice}
+                  data-badge={dish.badge}
+                  data-desc={dish.description}
+                  data-img={dish.image}
+                  data-prep={dish.prepTime}
+                  data-cal={dish.calories}
+                  data-ingredients={JSON.stringify(dish.ingredients)}
+                  data-pairing={dish.pairing}
+                >
+                  Ver ficha nutricional & maridaje
+                </button>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <!-- ======================================================================
+           FULL 10 SIGNATURE HAMBURGERS CATALOG (Keeping All Sample Products)
+           ====================================================================== -->
+      <div class="catalog-tabs-wrap" id="author-burgers">
+        <div class="section-header-row" style="margin-bottom: 1.5rem;">
+          <div>
+            <div class="section-label">CARTA COMPLETA COMERCIAL</div>
+            <h2 class="section-title">Nuestras 10 Creaciones de Autor</h2>
+          </div>
+          <p class="specials-subtitle" style="margin: 0;">
+            100% Angus Certificado, Pan Brioche Artesanal & Fuego de Roble Vivo.
+          </p>
+        </div>
+
+        <!-- Filter tabs for all burger varieties -->
+        <div class="catalog-filter-bar">
+          <button class="catalog-filter-btn active" data-filter="all">Todas las Creaciones (10)</button>
+          <button class="catalog-filter-btn" data-filter="Especiales de la Casa">Especiales de la Casa</button>
+          <button class="catalog-filter-btn" data-filter="Clásicas">Clásicas de Autor</button>
+          <button class="catalog-filter-btn" data-filter="Gourmet">Gourmet Select</button>
+          <button class="catalog-filter-btn" data-filter="Pollo & Crispy">Pollo & Crispy</button>
+          <button class="catalog-filter-btn" data-filter="Vegetariana">Plant-Based</button>
+        </div>
+
+        <div class="products-grid" id="burgersGrid">
+          {burgers.map((burger) => (
+            <article class="product-card catalog-burger-card" data-subcat={burger.subCategory}>
+              <div class="product-img-wrap">
+                <span class="card-badge-pill card-badge-gold">
+                  {burger.badge}
+                </span>
+                <img src={burger.image} alt={burger.name} loading="lazy" />
+              </div>
+
+              <div class="card-content">
+                <h3 class="product-title">{burger.name}</h3>
+                <p class="product-desc">{burger.description}</p>
+
+                <div class="product-footer">
+                  <div class="product-price-row">
+                    <div class="product-price">{burger.displayPrice}</div>
+                    <div class="product-rating">★ {burger.rating} ({burger.reviews})</div>
+                  </div>
+
+                  <button 
+                    class="btn-add-cart add-to-cart-btn"
+                    data-id={burger.id}
+                    data-name={burger.name}
+                    data-price={burger.price}
+                    data-img={burger.image}
+                  >
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="9" cy="21" r="1"></circle>
+                      <circle cx="20" cy="21" r="1"></circle>
+                      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span>Add to Cart</span>
+                  </button>
+
+                  <button 
+                    class="btn-card-details view-detail-trigger"
+                    data-name={burger.name}
+                    data-price={burger.displayPrice}
+                    data-badge={burger.badge}
+                    data-desc={burger.description}
+                    data-img={burger.image}
+                    data-prep={burger.prepTime}
+                    data-cal={burger.calories}
+                    data-ingredients={JSON.stringify(burger.ingredients)}
+                    data-pairing={burger.pairing}
+                  >
+                    Ver detalles e ingredientes ➔
+                  </button>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       5. SPLIT PROMO BANNERS ("COMBO IT BETTER" & "SWEET ENDINGS")
+       ========================================================================== -->
+  <section class="promo-banners-section" id="promos">
+    <div class="container">
+      <div class="promo-banners-grid">
+        <!-- Left Banner: COMBO IT BETTER (Dark Theme) -->
+        <div class="promo-banner-dark">
+          <div class="banner-text-col">
+            <h3 class="banner-title-dark">
+              COMBO IT <br />
+              <span>BETTER</span>
+            </h3>
+            <p class="banner-desc-dark">
+              Burgers + Fries + Drink <br />
+              = A Happier You!
+            </p>
+            <a href="#author-burgers" class="btn-gold btn-gold-sm">
+              <span>Explore Combos</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+          <div class="banner-img-col">
+            <img 
+              src="https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=600&auto=format&fit=crop&q=80" 
+              alt="Combo Burger Bros with Coke and Fries" 
+            />
+          </div>
+        </div>
+
+        <!-- Right Banner: SWEET ENDINGS (Light/Cream Theme) -->
+        <div class="promo-banner-light">
+          <!-- Doodle Annotation -->
+          <div class="doodle-sweet">
+            Happiness Comes<br />in Scoops ♡
+            <span class="arrow-curve">⤷</span>
+          </div>
+
+          <div class="banner-text-col">
+            <h3 class="banner-title-light">
+              SWEET <br />
+              ENDINGS
+            </h3>
+            <p class="banner-desc-light">
+              Because every great meal deserves a sweeter finish.
+            </p>
+            <a href="#specials" class="btn-outline">
+              <span>View Desserts</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+          <div class="banner-img-col">
+            <img 
+              src="https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=600&auto=format&fit=crop&q=80" 
+              alt="Sweet Desserts Chocolate Oreo Shake" 
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       6. VALUE PROPOSITION (4 PILLARS: Freshly Made, Quality, Ambience, For Everyone)
+       ========================================================================== -->
+  <section class="trust-pillars-section">
+    <div class="container">
+      <div class="trust-pillars-grid">
+        <div class="trust-pillar-item">
+          <div class="pillar-icon-box" style="color: #E53935;">
+            🥣
+          </div>
+          <div class="pillar-text">
+            <h4>Freshly Made</h4>
+            <p>Prepared fresh, everytime.</p>
+          </div>
+        </div>
+
+        <div class="trust-pillar-item">
+          <div class="pillar-icon-box" style="color: #43A047;">
+            🌿
+          </div>
+          <div class="pillar-text">
+            <h4>Quality Ingredients</h4>
+            <p>Only the best, always.</p>
+          </div>
+        </div>
+
+        <div class="trust-pillar-item">
+          <div class="pillar-icon-box" style="color: #FB8C00;">
+            👥
+          </div>
+          <div class="pillar-text">
+            <h4>Great Ambience</h4>
+            <p>A place to hangout & enjoy.</p>
+          </div>
+        </div>
+
+        <div class="trust-pillar-item">
+          <div class="pillar-icon-box" style="color: #E91E63;">
+            🧡
+          </div>
+          <div class="pillar-text">
+            <h4>Food for Everyone</h4>
+            <p>Veg, non-veg & more.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       7. BOTTOM HERO BANNER ("Crave It? We'll Deliver It!")
+       ========================================================================== -->
+  <section class="bottom-cta-section" id="order-now">
+    <div class="container">
+      <div class="bottom-cta-banner">
+        <div class="bottom-cta-overlay">
+          <div>
+            <div class="bottom-cta-tag">GOOD FOOD ALWAYS</div>
+            <h2 class="bottom-cta-headline">
+              <span class="script-crave">Crave It?</span>
+              We'll Deliver It!
+            </h2>
+            <p class="bottom-cta-desc">
+              Order your favorite food now and enjoy the perfect blend of taste and freshness right at your doorstep.
+            </p>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+              <a href="#menu" class="btn-gold" style="padding: 0.85rem 1.85rem; font-size: 1rem;">
+                <span>Order Now</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+              <a href="/app" class="btn-outline" style="color: #FFFFFF; border-color: rgba(255,255,255,0.4); padding: 0.85rem 1.4rem;">
+                <span>📲 Abrir en PWA</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Right side of bottom banner with doodles -->
+          <div class="bottom-cta-visual">
+            <div class="doodle-vibes">
+              Good Food ♡<br />
+              <span>Good Vibes!</span>
+              <span class="vibe-sparks">✧ ✦</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       8. FOOTER & TRUST BAR
+       ========================================================================== -->
+  <footer>
+    <div class="container">
+      <!-- Top Trust Guarantees -->
+      <div class="footer-guarantees">
+        <div class="guarantee-item">
+          <span class="guarantee-icon">🌿</span>
+          <span>100% Fresh Ingredients</span>
+        </div>
+        <div class="guarantee-item">
+          <span class="guarantee-icon">⭐</span>
+          <span>Top Rated by Customers</span>
+        </div>
+        <div class="guarantee-item">
+          <span class="guarantee-icon">🚚</span>
+          <span>Fast & Reliable Delivery</span>
+        </div>
+        <div class="guarantee-item">
+          <span class="guarantee-icon">🛡️</span>
+          <span>Secure Online Payment</span>
+        </div>
+      </div>
+
+      <!-- Bottom Row with Copyright, Socials & Project Links -->
+      <div class="footer-bottom-row">
+        <div>
+          &copy; 2025 Tasty Bites & Hamburger Rapid. All rights reserved.
+        </div>
+
+        <div class="social-links">
+          <a href="#" class="social-icon-btn" aria-label="Facebook">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/>
+            </svg>
+          </a>
+          <a href="#" class="social-icon-btn" aria-label="Instagram">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+          </a>
+          <a href="#" class="social-icon-btn" aria-label="Pinterest">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0a12 12 0 0 0-4.37 23.18c-.06-.99-.1-2.52.02-3.61l.73-3.13s-.18-.38-.18-.94c0-.88.51-1.54 1.15-1.54.54 0 .8.41.8.9 0 .55-.35 1.37-.53 2.13-.15.64.32 1.15.94 1.15 1.13 0 2-.85 2-2.54 0-1.33-.96-2.26-2.32-2.26-1.58 0-2.51 1.18-2.51 2.41 0 .48.18.99.41 1.27.05.05.05.1.04.18l-.15.65c-.03.11-.09.15-.21.1-1.02-.47-1.66-1.95-1.66-3.14 0-2.56 1.86-4.91 5.37-4.91 2.82 0 5.01 2.01 5.01 4.7 0 2.8-1.77 5.06-4.22 5.06-.82 0-1.6-.43-1.87-.93l-.51 1.95c-.19.71-.69 1.6-1.03 2.15A11.96 11.96 0 0 0 12 24c6.63 0 12-5.37 12-12S18.63 0 12 0z"/>
+            </svg>
+          </a>
+          <a href="#" class="social-icon-btn" aria-label="YouTube">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+          </a>
+        </div>
+
+        <div class="ecosystem-links">
+          <a href="/app">📱 PWA Móvil</a>
+          <span>•</span>
+          <a href="/admin">⚙️ Admin Panel</a>
+          <span>•</span>
+          <a href="/api/health">API Status</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       9. SLIDE-IN CART DRAWER
+       ========================================================================== -->
+  <div class="cart-drawer-overlay" id="cartOverlay"></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Carrito de compras">
+    <div class="cart-drawer-header">
+      <div class="cart-drawer-title">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+        <span>Tu Orden</span>
+      </div>
+      <button class="cart-close-btn" id="cartCloseBtn" aria-label="Cerrar carrito">&times;</button>
+    </div>
+
+    <div class="cart-items-container" id="cartItemsList">
+      <!-- Items dynamically populated via JavaScript -->
+    </div>
+
+    <div class="cart-drawer-footer">
+      <div class="cart-summary-line">
+        <span>Subtotal</span>
+        <span id="cartSubtotal">$0.00</span>
+      </div>
+      <div class="cart-summary-line">
+        <span>Delivery Express</span>
+        <span style="color: #43A047; font-weight: 700;">¡GRATIS!</span>
+      </div>
+      <div class="cart-total-line">
+        <span>Total</span>
+        <span id="cartTotal" style="color: #D97706;">$0.00</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <button class="btn-gold" id="checkoutBtn" style="width: 100%; justify-content: center; padding: 0.85rem;">
+          <span>Proceder al Pago</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+        <a href="/app" class="btn-outline" style="width: 100%; justify-content: center; font-size: 0.85rem; padding: 0.55rem;">
+          📱 Continuar en la App Móvil PWA
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ==========================================================================
+       10. DETAILS MODAL
+       ========================================================================== -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal-box">
+      <button class="modal-close" id="modalCloseBtn" aria-label="Cerrar">&times;</button>
+      <img id="modalImg" class="modal-image" src="" alt="Detalle del platillo" />
+      
+      <div class="modal-body">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+          <div>
+            <div id="modalBadge" class="card-badge-pill" style="position: static; display: inline-block; margin-bottom: 0.5rem;"></div>
+            <h3 id="modalTitle" style="font-size: 1.6rem; font-weight: 800; color: #191614; line-height: 1.2;"></h3>
+          </div>
+          <div id="modalPrice" style="font-size: 1.5rem; font-weight: 900; color: #D97706;"></div>
+        </div>
+
+        <p id="modalDesc" style="color: #6B655F; font-size: 0.95rem; margin-bottom: 1.25rem; line-height: 1.55;"></p>
+
+        <div style="background: #FAF8F5; border: 1px solid #E8E3DC; border-radius: 14px; padding: 1.15rem; margin-bottom: 1.25rem;">
+          <div style="font-weight: 800; font-size: 0.8rem; color: #191614; margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.05em;">
+            🥩 Ingredientes & Elaboración de Autor
+          </div>
+          <ul id="modalIngredients" style="list-style: none; display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.88rem; color: #475569;">
+          </ul>
+        </div>
+
+        <div style="display: flex; gap: 0.85rem; margin-bottom: 1.25rem; flex-wrap: wrap;">
+          <div style="flex: 1; background: #FFF8EB; border: 1px solid #FDE68A; padding: 0.75rem 1rem; border-radius: 10px;">
+            <div style="font-size: 0.72rem; color: #B45309; font-weight: 800; text-transform: uppercase;">Maridaje Recomendado</div>
+            <div id="modalPairing" style="font-size: 0.85rem; font-weight: 600; color: #78350F; margin-top: 0.2rem;"></div>
+          </div>
+          <div style="background: #F3EFEA; padding: 0.75rem 1rem; border-radius: 10px;">
+            <div style="font-size: 0.72rem; color: #64748B; font-weight: 800; text-transform: uppercase;">Preparación</div>
+            <div id="modalPrep" style="font-size: 0.85rem; font-weight: 700; color: #191614; margin-top: 0.2rem;"></div>
+          </div>
+        </div>
+
+        <button id="modalAddToCartBtn" class="btn-gold" style="width: 100%; justify-content: center; padding: 0.85rem; font-size: 1rem;">
+          <span>Agregar este platillo al Carrito</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-msg" id="toastMsg">
+    <span>✅ Platillo agregado al carrito</span>
+  </div>
+
+  <!-- ==========================================================================
+       11. CLIENT-SIDE INTERACTIVITY SCRIPT
+       ========================================================================== -->
+  <script is:inline>
+    // Shopping Cart State
+    let cart = [];
+
+    // DOM Elements
+    const cartOverlay = document.getElementById('cartOverlay');
+    const cartDrawer = document.getElementById('cartDrawer');
+    const cartTriggerBtn = document.getElementById('cartTriggerBtn');
+    const cartCloseBtn = document.getElementById('cartCloseBtn');
+    const cartBadgeCount = document.getElementById('cartBadgeCount');
+    const cartItemsList = document.getElementById('cartItemsList');
+    const cartSubtotal = document.getElementById('cartSubtotal');
+    const cartTotal = document.getElementById('cartTotal');
+    const toastMsg = document.getElementById('toastMsg');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+
+    // Open/Close Cart
+    function openCart() {
+      cartOverlay.classList.add('active');
+      cartDrawer.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCart() {
+      cartOverlay.classList.remove('active');
+      cartDrawer.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    cartTriggerBtn.addEventListener('click', openCart);
+    cartCloseBtn.addEventListener('click', closeCart);
+    cartOverlay.addEventListener('click', closeCart);
+
+    // Show Toast
+    function showToast(text) {
+      toastMsg.querySelector('span').textContent = text;
+      toastMsg.classList.add('show');
+      setTimeout(() => {
+        toastMsg.classList.remove('show');
+      }, 2500);
+    }
+
+    // Update Cart UI
+    function updateCartUI() {
+      const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+      cartBadgeCount.textContent = totalCount;
+      cartBadgeCount.style.transform = 'scale(1.3)';
+      setTimeout(() => cartBadgeCount.style.transform = 'scale(1)', 200);
+
+      const subtotalVal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      cartSubtotal.textContent = `$${subtotalVal.toFixed(2)}`;
+      cartTotal.textContent = `$${subtotalVal.toFixed(2)}`;
+
+      if (cart.length === 0) {
+        cartItemsList.innerHTML = `
+          <div class="cart-empty-state">
+            <div class="cart-empty-icon">🍔</div>
+            <h4 style="color:#191614; font-weight:800; margin-bottom:0.4rem;">Tu carrito está vacío</h4>
+            <p style="font-size:0.85rem;">Explora nuestro menú y añade tus platillos favoritos con un solo clic.</p>
+          </div>
+        `;
+        checkoutBtn.disabled = true;
+        checkoutBtn.style.opacity = '0.5';
+      } else {
+        checkoutBtn.disabled = false;
+        checkoutBtn.style.opacity = '1';
+        cartItemsList.innerHTML = cart.map(item => `
+          <div class="cart-item-row">
+            <img src="${item.img}" alt="${item.name}" class="cart-item-img" />
+            <div class="cart-item-details">
+              <div class="cart-item-title">${item.name}</div>
+              <div class="cart-item-price">$${(item.price * item.qty).toFixed(2)}</div>
+            </div>
+            <div class="cart-qty-ctrl">
+              <button class="qty-btn" onclick="changeQty('${item.id}', -1)">-</button>
+              <span style="font-size:0.88rem; font-weight:800; min-width:18px; text-align:center;">${item.qty}</span>
+              <button class="qty-btn" onclick="changeQty('${item.id}', 1)">+</button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    // Cart Action Functions
+    window.addToCart = function(id, name, price, img) {
+      const existing = cart.find(item => item.id === id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ id, name, price: parseFloat(price), img, qty: 1 });
+      }
+      updateCartUI();
+      showToast(`✔ "${name}" agregado al carrito`);
+    };
+
+    window.changeQty = function(id, delta) {
+      const index = cart.findIndex(item => item.id === id);
+      if (index !== -1) {
+        cart[index].qty += delta;
+        if (cart[index].qty <= 0) {
+          cart.splice(index, 1);
+        }
+        updateCartUI();
+      }
+    };
+
+    // Attach Click Events to "Add to Cart" Buttons
+    document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        const name = btn.getAttribute('data-name');
+        const price = btn.getAttribute('data-price');
+        const img = btn.getAttribute('data-img');
+        window.addToCart(id, name, price, img);
+      });
+    });
+
+    // Checkout Action
+    checkoutBtn.addEventListener('click', () => {
+      if (cart.length === 0) return;
+      const totalStr = cartTotal.textContent;
+      const confirmOrder = confirm(`¿Confirmar orden por un total de ${totalStr}?\n\nPuedes continuar para recibir tu entrega Express en 15 minutos.`);
+      if (confirmOrder) {
+        alert("🎉 ¡Pedido confirmado con éxito! Nuestro chef ya está preparando tus platillos.");
+        cart = [];
+        updateCartUI();
+        closeCart();
+      }
+    });
+
+    // Category Filtering in "Something for Every Craving"
+    const cravingCards = document.querySelectorAll('.craving-card');
+    cravingCards.forEach(card => {
+      card.addEventListener('click', () => {
+        cravingCards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        const cat = card.getAttribute('data-category');
+        
+        // Scroll smoothly to menu items
+        const specialsSection = document.getElementById('specials');
+        specialsSection.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Subcategory Filtering in 10 Burgers Catalog
+    const filterBtns = document.querySelectorAll('.catalog-filter-btn');
+    const burgerCards = document.querySelectorAll('.catalog-burger-card');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.getAttribute('data-filter');
+        burgerCards.forEach(card => {
+          if (filter === 'all' || card.getAttribute('data-subcat') === filter) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Details Modal Logic
+    const productModal = document.getElementById('productModal');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const modalImg = document.getElementById('modalImg');
+    const modalBadge = document.getElementById('modalBadge');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalPrice = document.getElementById('modalPrice');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalIngredients = document.getElementById('modalIngredients');
+    const modalPairing = document.getElementById('modalPairing');
+    const modalPrep = document.getElementById('modalPrep');
+    const modalAddToCartBtn = document.getElementById('modalAddToCartBtn');
+
+    let currentModalProduct = null;
+
+    document.querySelectorAll('.view-detail-trigger').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const name = btn.getAttribute('data-name');
+        const price = btn.getAttribute('data-price');
+        const badge = btn.getAttribute('data-badge') || 'Gourmet Selection';
+        const desc = btn.getAttribute('data-desc');
+        const img = btn.getAttribute('data-img');
+        const prep = btn.getAttribute('data-prep') || '8-12 min';
+        const pairing = btn.getAttribute('data-pairing') || 'Bebida Artesanal de la Casa';
+        const rawIngredients = btn.getAttribute('data-ingredients') || '[]';
+
+        modalImg.src = img;
+        modalTitle.textContent = name;
+        modalPrice.textContent = price;
+        modalDesc.textContent = desc;
+        modalBadge.textContent = badge;
+        modalPrep.textContent = prep;
+        modalPairing.textContent = pairing;
+
+        currentModalProduct = { name, price: parseFloat(price.replace(/[^0-9.]/g, '') || 9.99), img };
+
+        try {
+          const ings = JSON.parse(rawIngredients);
+          modalIngredients.innerHTML = ings.map(i => `<li>✔ ${i}</li>`).join('');
+        } catch (e) {
+          modalIngredients.innerHTML = '<li>✔ Ingredientes frescos seleccionados</li>';
+        }
+
+        productModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    function closeDetailsModal() {
+      productModal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    modalCloseBtn.addEventListener('click', closeDetailsModal);
+    productModal.addEventListener('click', (e) => {
+      if (e.target === productModal) closeDetailsModal();
+    });
+
+    modalAddToCartBtn.addEventListener('click', () => {
+      if (currentModalProduct) {
+        window.addToCart(
+          'modal-' + Date.now(),
+          currentModalProduct.name,
+          currentModalProduct.price,
+          currentModalProduct.img
+        );
+        closeDetailsModal();
+        openCart();
+      }
+    });
+
+    // Quick Search trigger
+    document.getElementById('searchTriggerBtn').addEventListener('click', () => {
+      const term = prompt("Buscar en el menú gourmet (ej: pizza, angus, fries, trufa, shake):");
+      if (term && term.trim()) {
+        const query = term.toLowerCase().trim();
+        const cards = document.querySelectorAll('.product-card');
+        let found = 0;
+        cards.forEach(c => {
+          const title = c.querySelector('.product-title')?.textContent.toLowerCase() || '';
+          const desc = c.querySelector('.product-desc')?.textContent.toLowerCase() || '';
+          if (title.includes(query) || desc.includes(query)) {
+            c.style.display = 'flex';
+            found++;
+          } else {
+            c.style.display = 'none';
+          }
+        });
+        showToast(`🔍 Se encontraron ${found} resultados para "${term}"`);
+        document.getElementById('specials').scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+
+    // Initialize Empty Cart UI
+    updateCartUI();
+  </script>
+</body>
+</html>
