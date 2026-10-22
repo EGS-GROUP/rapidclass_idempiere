@@ -94,4 +94,51 @@ router.post('/reset', async (req, res) => {
   }
 });
 
+// List all orders (unified omnicanal)
+router.get('/orders', async (req, res) => {
+  try {
+    const orders = await db.getOrders();
+    res.json({
+      success: true,
+      count: orders.length,
+      data: orders
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Create new order
+router.post('/orders', async (req, res) => {
+  try {
+    const orderData = req.body;
+    const newOrder = await db.addOrder(orderData);
+    res.status(201).json({
+      success: true,
+      message: 'Orden creada exitosamente con soporte de tracking GPS',
+      data: newOrder
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Get real-time GPS tracking telemetry & waypoints info for an order
+router.get('/orders/:id/track', (req, res) => {
+  try {
+    const { id } = req.params;
+    const tracking = db.getOrderTracking(id);
+    if (!tracking) {
+      return res.status(404).json({ success: false, error: `Orden ${id} no encontrada para tracking GPS` });
+    }
+    res.json({
+      success: true,
+      data: tracking
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 module.exports = router;
+

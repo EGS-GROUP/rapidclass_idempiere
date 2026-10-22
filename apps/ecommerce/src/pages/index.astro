@@ -1942,6 +1942,14 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
           <span class="cart-badge" id="cartBadgeCount">0</span>
         </button>
 
+        <!-- GPS Tracking Button -->
+        <button class="icon-btn" id="gpsNavTriggerBtn" title="Rastreo Satelital GPS en Vivo" aria-label="Rastrear Pedido GPS" style="position: relative; color: #38bdf8;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+          </svg>
+          <span style="position: absolute; top: -3px; right: -3px; width: 8px; height: 8px; background: #0284c7; border-radius: 50%; box-shadow: 0 0 8px #38bdf8;"></span>
+        </button>
+
         <!-- Order Now CTA -->
         <a href="#menu" class="btn-gold" id="headerOrderBtn">
           <span>Order Now</span>
@@ -2572,6 +2580,104 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
   </div>
 
   <!-- ==========================================================================
+       MODAL DE SEGUIMIENTO GPS SATELITAL EN VIVO (Leaflet + Carto Voyager + OSRM)
+       ========================================================================== -->
+  <div class="modal-overlay" id="gpsTrackingModal" style="display: none; align-items: center; justify-content: center; z-index: 99999; padding: 1rem; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px);">
+    <div style="background: #ffffff; border-radius: 16px; width: 100%; max-width: 980px; height: 90vh; max-height: 800px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4); border: 1px solid #334155;">
+      
+      <!-- Modal Header -->
+      <div style="padding: 12px 20px; background: #0f172a; color: #ffffff; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 38px; height: 38px; border-radius: 10px; background: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+            🛰️
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <h3 style="margin: 0; font-size: 1.05rem; font-weight: 800; color: #f8fafc;">Rastreo Satelital GPS en Tiempo Real</h3>
+              <span id="gpsOrderBadge" style="background: #0284c7; color: #ffffff; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 9999px;">TB-8492</span>
+              <span id="gpsStatusBadge" style="background: #d97706; color: #ffffff; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 9999px;">EN RUTA</span>
+            </div>
+            <p id="gpsRouteSub" style="margin: 2px 0 0 0; font-size: 0.75rem; color: #94a3b8;">
+              Almacén San Isidro ➔ Av. José Larco 812, Miraflores, Lima
+            </p>
+          </div>
+        </div>
+        <button id="closeGpsModalBtn" style="background: transparent; border: none; color: #94a3b8; font-size: 24px; cursor: pointer; padding: 4px 10px; border-radius: 8px;">✕</button>
+      </div>
+
+      <!-- Controls & Vehicle Selector -->
+      <div style="padding: 10px 16px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="font-size: 0.75rem; font-weight: 700; color: #475569; text-transform: uppercase;">Vehículo:</span>
+          <div style="display: inline-flex; background: #e2e8f0; border-radius: 8px; padding: 2px;" id="gpsVehicleGroup">
+            <button class="gps-veh-btn active" data-vehicle="moto" style="border: none; background: #0284c7; color: #fff; padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">🛵 Moto (45 km/h)</button>
+            <button class="gps-veh-btn" data-vehicle="auto" style="border: none; background: transparent; color: #334155; padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">🚗 Auto (35 km/h)</button>
+            <button class="gps-veh-btn" data-vehicle="camion" style="border: none; background: transparent; color: #334155; padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">🚚 Camión (25 km/h)</button>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button id="gpsPlayPauseBtn" style="border: 1px solid #cbd5e1; background: #ffffff; color: #0f172a; padding: 5px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;">⏸️ Pausar</button>
+          <button id="gpsResetBtn" style="border: 1px solid #cbd5e1; background: #ffffff; color: #475569; padding: 5px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 600; cursor: pointer;">🔄 Reiniciar</button>
+          <span style="font-size: 0.72rem; color: #64748b; font-weight: 700; margin-left: 4px;">Simulador:</span>
+          <div style="display: inline-flex; gap: 3px;" id="gpsSpeedGroup">
+            <button class="gps-spd-btn active" data-speed="1" style="border: 1px solid #cbd5e1; background: #0f172a; color: #fff; padding: 3px 7px; border-radius: 4px; font-size: 0.72rem; font-weight: 700; cursor: pointer;">1x</button>
+            <button class="gps-spd-btn" data-speed="2" style="border: 1px solid #cbd5e1; background: #fff; color: #334155; padding: 3px 7px; border-radius: 4px; font-size: 0.72rem; font-weight: 700; cursor: pointer;">2x</button>
+            <button class="gps-spd-btn" data-speed="5" style="border: 1px solid #cbd5e1; background: #fff; color: #334155; padding: 3px 7px; border-radius: 4px; font-size: 0.72rem; font-weight: 700; cursor: pointer;">5x</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Bar -->
+      <div style="padding: 8px 16px; background: #ffffff; border-bottom: 1px solid #e2e8f0; display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; align-items: center;">
+        <div>
+          <div style="font-size: 0.68rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Distancia Restante</div>
+          <div id="gpsRemainingKm" style="font-size: 1.15rem; font-weight: 800; color: #0f172a; font-variant-numeric: tabular-nums;">-- km</div>
+        </div>
+        <div>
+          <div style="font-size: 0.68rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Tiempo Estimado (ETA)</div>
+          <div id="gpsEta" style="font-size: 1.15rem; font-weight: 800; color: #0284c7; font-variant-numeric: tabular-nums;">--:--</div>
+        </div>
+        <div>
+          <div style="font-size: 0.68rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Velocidad</div>
+          <div id="gpsSpeed" style="font-size: 1.15rem; font-weight: 800; color: #d97706; font-variant-numeric: tabular-nums;">45 km/h</div>
+        </div>
+        <div style="grid-column: span 2;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 3px;">
+            <span>Progreso del Trayecto</span>
+            <span id="gpsProgressText" style="color: #0284c7; font-variant-numeric: tabular-nums;">0%</span>
+          </div>
+          <div style="width: 100%; height: 6px; background: #f1f5f9; border-radius: 3px; overflow: hidden;">
+            <div id="gpsProgressBar" style="width: 0%; height: 100%; background: #0284c7; transition: width 0.1s linear;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Success banner -->
+      <div id="gpsSuccessBanner" style="display: none; padding: 8px 16px; background: #ecfdf5; border-bottom: 1px solid #a7f3d0; color: #065f46; font-size: 0.82rem; font-weight: 700; justify-content: space-between; align-items: center;">
+        <span>🎉 ¡Tu pedido ha sido entregado con éxito en tu dirección! ¡Buen provecho!</span>
+        <button id="gpsReplayBtn" style="background: #059669; color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">Repetir Ruta</button>
+      </div>
+
+      <!-- Map Container -->
+      <div style="flex: 1; position: relative; width: 100%; min-height: 340px;">
+        <div id="gpsLoadingOverlay" style="position: absolute; inset: 0; background: rgba(255,255,255,0.85); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+          <div style="font-size: 2rem;">🛰️</div>
+          <div style="font-size: 0.9rem; font-weight: 700; color: #0f172a;">Calculando ruta vial con OSRM...</div>
+          <div style="font-size: 0.75rem; color: #64748b;">San Isidro ➔ Miraflores, Lima</div>
+        </div>
+        <div id="ecommerceLeafletMap" style="width: 100%; height: 100%;"></div>
+      </div>
+
+      <!-- Footer Info -->
+      <div style="padding: 8px 16px; background: #f8fafc; border-top: 1px solid #e2e8f0; font-size: 0.72rem; color: #64748b; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <div><b>Almacén Central:</b> San Isidro (-12.0969, -77.0354) | <b>Destino:</b> Miraflores, Lima</div>
+        <div>Capas <b>Carto Voyager + OSRM</b> • Restricción Nacional Perú</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
        11. CLIENT-SIDE INTERACTIVITY SCRIPT
        ========================================================================== -->
   <script is:inline>
@@ -2695,12 +2801,17 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
     checkoutBtn.addEventListener('click', () => {
       if (cart.length === 0) return;
       const totalStr = cartTotal.textContent;
-      const confirmOrder = confirm(`¿Confirmar orden por un total de ${totalStr}?\n\nPuedes continuar para recibir tu entrega Express en 15 minutos.`);
+      const confirmOrder = confirm(`¿Confirmar orden por un total de ${totalStr}?\n\nPuedes continuar para recibir tu entrega Express y ver el Seguimiento GPS Satelital en tiempo real.`);
       if (confirmOrder) {
-        alert("🎉 ¡Pedido confirmado con éxito! Nuestro chef ya está preparando tus platillos.");
+        const generatedOrderId = `TB-${Math.floor(1000 + Math.random() * 9000)}`;
         cart = [];
         updateCartUI();
         closeCart();
+        // Abrir inmediatamente el modal de seguimiento satelital GPS
+        openGpsModal({
+          orderId: generatedOrderId,
+          destAddress: 'Av. José Larco 812, Miraflores, Lima'
+        });
       }
     });
 
@@ -2833,6 +2944,380 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
 
     // Initialize Empty Cart UI
     updateCartUI();
+
+    // ==========================================================================
+    // GPS TRACKING SATELLITE SYSTEM (Leaflet, Carto Voyager, OSRM)
+    // ==========================================================================
+    const CENTRAL_SAN_ISIDRO = { lat: -12.0969, lng: -77.0354 };
+    const PERU_BOUNDS = [[-18.35, -81.33], [-0.03, -68.65]];
+    const CARTO_KEY = 'cb1_4pm2_1_200f6c4d689008428bc823c8';
+    const CARTO_URL = `https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=${CARTO_KEY}`;
+    const CARTO_FALLBACK = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+
+    const VEHICLE_DATA = {
+      moto: { label: 'Moto Reparto', icon: '🛵', speed: 45 },
+      auto: { label: 'Auto Express', icon: '🚗', speed: 35 },
+      camion: { label: 'Camión Logístico', icon: '🚚', speed: 25 }
+    };
+
+    let gpsMap = null;
+    let gpsVehicleMarker = null;
+    let gpsTraveledLine = null;
+    let gpsRouteData = null;
+    let gpsAnimId = null;
+    let gpsLastTime = null;
+    let gpsProgress = 0;
+    let gpsIsPlaying = true;
+    let gpsIsCompleted = false;
+    let gpsSimSpeed = 1;
+    let gpsCurrentVehicle = 'moto';
+    let leafletLoaded = false;
+
+    // Lazy load Leaflet on demand
+    function loadLeafletEcommerce() {
+      if (window.L) return Promise.resolve(window.L);
+      return new Promise((resolve, reject) => {
+        if (!document.getElementById('leaflet-css')) {
+          const link = document.createElement('link');
+          link.id = 'leaflet-css';
+          link.rel = 'stylesheet';
+          link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+          document.head.appendChild(link);
+        }
+        const script = document.createElement('script');
+        script.id = 'leaflet-js';
+        script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        script.async = true;
+        script.onload = () => {
+          leafletLoaded = true;
+          resolve(window.L);
+        };
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+
+    // Geocode or fallback
+    async function geocodeDeliveryAddress(addr) {
+      try {
+        const c = new AbortController();
+        const tid = setTimeout(() => c.abort(), 2500);
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(addr + ', Lima, Peru')}&countrycodes=pe&format=json&limit=1`, { signal: c.signal });
+        clearTimeout(tid);
+        if (res.ok) {
+          const list = await res.json();
+          if (list && list.length > 0) {
+            return { lat: parseFloat(list[0].lat), lng: parseFloat(list[0].lon), name: list[0].display_name };
+          }
+        }
+      } catch (e) {}
+      // Fallback a Miraflores
+      return { lat: -12.1218, lng: -77.0298, name: 'Miraflores, Lima' };
+    }
+
+    // OSRM routing or fallback
+    async function fetchOsrmRoute(start, dest) {
+      try {
+        const c = new AbortController();
+        const tid = setTimeout(() => c.abort(), 3500);
+        const url = `https://router.project-osrm.org/route/v1/driving/${start.lng},${start.lat};${dest.lng},${dest.lat}?overview=full&geometries=geojson`;
+        const res = await fetch(url, { signal: c.signal });
+        clearTimeout(tid);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.code === 'Ok' && json.routes && json.routes.length > 0) {
+            const r = json.routes[0];
+            return {
+              points: r.geometry.coordinates.map(coord => [coord[1], coord[0]]),
+              distanceKm: Number((r.distance / 1000).toFixed(2))
+            };
+          }
+        }
+      } catch (e) {}
+
+      // Fallback urban curve
+      const pts = [];
+      const totalSteps = 40;
+      const midLat = (start.lat + dest.lat) / 2 + 0.003;
+      const midLng = (start.lng + dest.lng) / 2 - 0.003;
+      for (let i = 0; i <= 20; i++) {
+        const t = i / 20;
+        pts.push([start.lat + (midLat - start.lat) * t, start.lng + (midLng - start.lng) * t]);
+      }
+      for (let i = 1; i <= 20; i++) {
+        const t = i / 20;
+        pts.push([midLat + (dest.lat - midLat) * t, midLng + (dest.lng - midLng) * t]);
+      }
+      return { points: pts, distanceKm: 4.85 };
+    }
+
+    function formatEtaMinutes(km, speed) {
+      if (km <= 0.05) return '00:00';
+      const sec = Math.round((km / speed) * 3600);
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    async function openGpsModal(orderInfo) {
+      const modal = document.getElementById('gpsTrackingModal');
+      const overlay = document.getElementById('gpsLoadingOverlay');
+      const orderBadge = document.getElementById('gpsOrderBadge');
+      const statusBadge = document.getElementById('gpsStatusBadge');
+      const routeSub = document.getElementById('gpsRouteSub');
+      const successBanner = document.getElementById('gpsSuccessBanner');
+
+      if (!modal) return;
+      modal.style.display = 'flex';
+      overlay.style.display = 'flex';
+      successBanner.style.display = 'none';
+
+      orderBadge.textContent = orderInfo?.orderId || 'TB-8492';
+      statusBadge.textContent = 'EN RUTA';
+      statusBadge.style.background = '#d97706';
+
+      const destAddr = orderInfo?.destAddress || 'Av. José Larco 812, Miraflores, Lima';
+      routeSub.textContent = `Almacén San Isidro ➔ ${destAddr}`;
+
+      const L = await loadLeafletEcommerce();
+      const destCoords = await geocodeDeliveryAddress(destAddr);
+      const route = await fetchOsrmRoute(CENTRAL_SAN_ISIDRO, destCoords);
+      gpsRouteData = route;
+
+      overlay.style.display = 'none';
+
+      if (gpsMap) {
+        gpsMap.remove();
+        gpsMap = null;
+      }
+
+      gpsMap = L.map('ecommerceLeafletMap', {
+        maxBounds: PERU_BOUNDS,
+        minZoom: 6,
+        maxZoom: 19
+      });
+
+      const tileLayer = L.tileLayer(CARTO_URL, {
+        attribution: '&copy; OpenStreetMap &copy; CARTO',
+        maxZoom: 19
+      });
+      tileLayer.on('tileerror', () => {
+        tileLayer.setUrl(CARTO_FALLBACK);
+      });
+      tileLayer.addTo(gpsMap);
+
+      const whIcon = L.divIcon({
+        html: '<div style="background:#1e293b; color:#fff; border:2px solid #38bdf8; border-radius:50%; width:34px; height:34px; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 8px rgba(0,0,0,0.3); font-size:18px;">🏭</div>',
+        iconSize: [34, 34],
+        iconAnchor: [17, 17]
+      });
+
+      const clientIcon = L.divIcon({
+        html: '<div style="background:#b45309; color:#fff; border:2px solid #fef08a; border-radius:50%; width:34px; height:34px; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 8px rgba(0,0,0,0.3); font-size:18px;">📍</div>',
+        iconSize: [34, 34],
+        iconAnchor: [17, 17]
+      });
+
+      L.marker([CENTRAL_SAN_ISIDRO.lat, CENTRAL_SAN_ISIDRO.lng], { icon: whIcon }).addTo(gpsMap)
+        .bindPopup('<b>Almacén Central San Isidro</b><br/>Av. Rivera Navarrete 501');
+
+      L.marker([destCoords.lat, destCoords.lng], { icon: clientIcon }).addTo(gpsMap)
+        .bindPopup(`<b>Destino Cliente:</b><br/>${destAddr}`);
+
+      const fullRouteLine = L.polyline(route.points, {
+        color: '#0284c7',
+        weight: 4,
+        opacity: 0.85
+      }).addTo(gpsMap);
+
+      gpsTraveledLine = L.polyline([route.points[0]], {
+        color: '#10b981',
+        weight: 4,
+        opacity: 0.95
+      }).addTo(gpsMap);
+
+      gpsMap.fitBounds(fullRouteLine.getBounds(), { padding: [40, 40] });
+
+      const veh = VEHICLE_DATA[gpsCurrentVehicle];
+      const vIcon = L.divIcon({
+        html: `<div style="position:relative; width:40px; height:40px; display:flex; align-items:center; justify-content:center;">
+          <div style="position:absolute; width:100%; height:100%; border-radius:50%; background:rgba(2,132,199,0.35); animation:gpsPulse 2s infinite;"></div>
+          <div style="width:34px; height:34px; border-radius:50%; background:#fff; border:2px solid #0284c7; display:flex; align-items:center; justify-content:center; font-size:18px; box-shadow:0 3px 8px rgba(0,0,0,0.25); z-index:2;">${veh.icon}</div>
+        </div>`,
+        iconSize: [40, 40],
+        iconAnchor: [20, 20]
+      });
+
+      gpsVehicleMarker = L.marker(route.points[0], { icon: vIcon, zIndexOffset: 1000 }).addTo(gpsMap);
+
+      gpsProgress = 0;
+      gpsIsPlaying = true;
+      gpsIsCompleted = false;
+      startGpsSimulation();
+    }
+
+    function closeGpsModal() {
+      const modal = document.getElementById('gpsTrackingModal');
+      if (modal) modal.style.display = 'none';
+      if (gpsAnimId) cancelAnimationFrame(gpsAnimId);
+      if (gpsMap) {
+        gpsMap.remove();
+        gpsMap = null;
+      }
+    }
+
+    function startGpsSimulation() {
+      if (gpsAnimId) cancelAnimationFrame(gpsAnimId);
+      gpsLastTime = performance.now();
+
+      const remKmEl = document.getElementById('gpsRemainingKm');
+      const etaEl = document.getElementById('gpsEta');
+      const speedEl = document.getElementById('gpsSpeed');
+      const progressTextEl = document.getElementById('gpsProgressText');
+      const progressBarEl = document.getElementById('gpsProgressBar');
+      const statusBadge = document.getElementById('gpsStatusBadge');
+      const successBanner = document.getElementById('gpsSuccessBanner');
+
+      const points = gpsRouteData.points;
+      const totalPts = points.length;
+      const baseMs = 28000;
+
+      function loop(time) {
+        if (!gpsIsPlaying || gpsIsCompleted) return;
+        const delta = time - gpsLastTime;
+        gpsLastTime = time;
+
+        const stepMs = baseMs / gpsSimSpeed;
+        gpsProgress += (delta / stepMs) * 100;
+
+        if (gpsProgress >= 100) {
+          gpsProgress = 100;
+          gpsIsCompleted = true;
+          gpsIsPlaying = false;
+          remKmEl.textContent = '0.00 km';
+          etaEl.textContent = '00:00';
+          progressTextEl.textContent = '100%';
+          progressBarEl.style.width = '100%';
+          progressBarEl.style.background = '#059669';
+          statusBadge.textContent = '✓ ENTREGADO';
+          statusBadge.style.background = '#059669';
+          successBanner.style.display = 'flex';
+          if (gpsVehicleMarker) gpsVehicleMarker.setLatLng(points[totalPts - 1]);
+          if (gpsTraveledLine) gpsTraveledLine.setLatLngs(points);
+          return;
+        }
+
+        const floatIdx = (gpsProgress / 100) * (totalPts - 1);
+        const low = Math.floor(floatIdx);
+        const high = Math.min(low + 1, totalPts - 1);
+        const t = floatIdx - low;
+
+        const curLat = points[low][0] + (points[high][0] - points[low][0]) * t;
+        const curLng = points[low][1] + (points[high][1] - points[low][1]) * t;
+        const curPos = [curLat, curLng];
+
+        if (gpsVehicleMarker) gpsVehicleMarker.setLatLng(curPos);
+        if (gpsTraveledLine) {
+          const cov = points.slice(0, low + 1);
+          cov.push(curPos);
+          gpsTraveledLine.setLatLngs(cov);
+        }
+
+        const veh = VEHICLE_DATA[gpsCurrentVehicle];
+        const remKm = Number((gpsRouteData.distanceKm * (1 - gpsProgress / 100)).toFixed(2));
+        remKmEl.textContent = `${remKm.toFixed(2)} km`;
+        etaEl.textContent = formatEtaMinutes(remKm, veh.speed);
+        speedEl.textContent = `${Math.round(veh.speed * gpsSimSpeed)} km/h`;
+        progressTextEl.textContent = `${Math.round(gpsProgress)}%`;
+        progressBarEl.style.width = `${gpsProgress}%`;
+        progressBarEl.style.background = '#0284c7';
+
+        gpsAnimId = requestAnimationFrame(loop);
+      }
+
+      gpsAnimId = requestAnimationFrame(loop);
+    }
+
+    // Modal Events
+    document.getElementById('closeGpsModalBtn')?.addEventListener('click', closeGpsModal);
+    document.getElementById('gpsNavTriggerBtn')?.addEventListener('click', () => {
+      openGpsModal({ orderId: 'TB-8492', destAddress: 'Av. José Larco 812, Miraflores, Lima' });
+    });
+
+    document.getElementById('gpsPlayPauseBtn')?.addEventListener('click', (e) => {
+      if (gpsIsCompleted) {
+        document.getElementById('gpsResetBtn').click();
+        return;
+      }
+      gpsIsPlaying = !gpsIsPlaying;
+      e.target.textContent = gpsIsPlaying ? '⏸️ Pausar' : '▶️ Reanudar';
+      if (gpsIsPlaying) {
+        gpsLastTime = performance.now();
+        startGpsSimulation();
+      }
+    });
+
+    document.getElementById('gpsResetBtn')?.addEventListener('click', () => {
+      gpsProgress = 0;
+      gpsIsCompleted = false;
+      gpsIsPlaying = true;
+      document.getElementById('gpsPlayPauseBtn').textContent = '⏸️ Pausar';
+      document.getElementById('gpsSuccessBanner').style.display = 'none';
+      document.getElementById('gpsStatusBadge').textContent = 'EN RUTA';
+      document.getElementById('gpsStatusBadge').style.background = '#d97706';
+      if (gpsRouteData) {
+        if (gpsVehicleMarker) gpsVehicleMarker.setLatLng(gpsRouteData.points[0]);
+        if (gpsTraveledLine) gpsTraveledLine.setLatLngs([gpsRouteData.points[0]]);
+        startGpsSimulation();
+      }
+    });
+
+    document.getElementById('gpsReplayBtn')?.addEventListener('click', () => {
+      document.getElementById('gpsResetBtn').click();
+    });
+
+    // Vehicle Switch
+    document.querySelectorAll('.gps-veh-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.gps-veh-btn').forEach(b => {
+          b.classList.remove('active');
+          b.style.background = 'transparent';
+          b.style.color = '#334155';
+        });
+        btn.classList.add('active');
+        btn.style.background = '#0284c7';
+        btn.style.color = '#ffffff';
+
+        gpsCurrentVehicle = btn.getAttribute('data-vehicle');
+        const veh = VEHICLE_DATA[gpsCurrentVehicle];
+        if (window.L && gpsVehicleMarker) {
+          const vIcon = window.L.divIcon({
+            html: `<div style="position:relative; width:40px; height:40px; display:flex; align-items:center; justify-content:center;">
+              <div style="position:absolute; width:100%; height:100%; border-radius:50%; background:rgba(2,132,199,0.35); animation:gpsPulse 2s infinite;"></div>
+              <div style="width:34px; height:34px; border-radius:50%; background:#fff; border:2px solid #0284c7; display:flex; align-items:center; justify-content:center; font-size:18px; box-shadow:0 3px 8px rgba(0,0,0,0.25); z-index:2;">${veh.icon}</div>
+            </div>`,
+            iconSize: [40, 40],
+            iconAnchor: [20, 20]
+          });
+          gpsVehicleMarker.setIcon(vIcon);
+        }
+      });
+    });
+
+    // Speed Switch
+    document.querySelectorAll('.gps-spd-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.gps-spd-btn').forEach(b => {
+          b.classList.remove('active');
+          b.style.background = '#ffffff';
+          b.style.color = '#334155';
+        });
+        btn.classList.add('active');
+        btn.style.background = '#0f172a';
+        btn.style.color = '#ffffff';
+        gpsSimSpeed = parseInt(btn.getAttribute('data-speed'), 10) || 1;
+      });
+    });
   </script>
 </body>
 </html>

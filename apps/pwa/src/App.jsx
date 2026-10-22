@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import OrderTrackingModal from './components/OrderTrackingModal';
 
 const FALLBACK_BURGERS = [
   {
@@ -185,10 +186,14 @@ export default function App() {
       step: 2, // 1: Recibido, 2: Parrilla, 3: Empacado, 4: En camino, 5: Entregado
       eta: '8 - 10 min',
       date: 'Hoy, 20:45',
-      driver: 'Mateo R. • Moto Honda 125'
+      driver: 'Mateo R. • Moto Honda 125',
+      deliveryAddress: 'Av. José Larco 812, Miraflores, Lima',
+      deliveryCoords: { lat: -12.1218, lng: -77.0298 },
+      vehicle: 'moto'
     }
   ]);
   const [isSimulatingPayment, setIsSimulatingPayment] = useState(false);
+  const [selectedTrackingOrder, setSelectedTrackingOrder] = useState(null);
 
   // Network & PWA prompt
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -303,7 +308,10 @@ export default function App() {
         step: 1,
         eta: '12 - 15 min',
         date: 'Recién confirmado',
-        driver: 'Asignando repartidor express...'
+        driver: 'Mateo R. • Moto Honda 125',
+        deliveryAddress: 'Av. José Pardo 450, Miraflores, Lima',
+        deliveryCoords: { lat: -12.1218, lng: -77.0298 },
+        vehicle: 'moto'
       };
       setActiveOrders(prev => [newOrder, ...prev]);
       setCart([]);
@@ -797,6 +805,31 @@ export default function App() {
                       <span style={{ fontWeight: '700', color: '#0F172A' }}>ETA: {order.eta}</span>
                     </div>
 
+                    {/* GPS Tracking Button */}
+                    <button
+                      onClick={() => setSelectedTrackingOrder(order)}
+                      style={{
+                        width: '100%',
+                        background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+                        border: 'none',
+                        color: '#FFFFFF',
+                        padding: '10px',
+                        borderRadius: '10px',
+                        fontSize: '0.82rem',
+                        fontWeight: '800',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        boxShadow: '0 2px 8px rgba(2, 132, 199, 0.3)',
+                        marginBottom: '8px'
+                      }}
+                    >
+                      <span>🗺️</span>
+                      <span>Ver Seguimiento GPS Satelital en Vivo</span>
+                    </button>
+
                     {/* Simulation Control */}
                     <button
                       onClick={() => advanceOrderStep(order.id)}
@@ -812,7 +845,7 @@ export default function App() {
                         cursor: 'pointer'
                       }}
                     >
-                      ⚡ Simular avance de estado en vivo
+                      ⚡ Simular avance de estado en cocina
                     </button>
                   </div>
                 ))}
@@ -1324,6 +1357,14 @@ export default function App() {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Modal Seguimiento GPS Satelital PWA */}
+      {selectedTrackingOrder && (
+        <OrderTrackingModal
+          order={selectedTrackingOrder}
+          onClose={() => setSelectedTrackingOrder(null)}
+        />
       )}
     </div>
   );

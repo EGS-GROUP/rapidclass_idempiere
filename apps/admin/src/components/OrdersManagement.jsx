@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import OrderTrackingModal from './OrderTrackingModal';
 
 const INITIAL_ORDERS = [
   {
@@ -18,7 +19,10 @@ const INITIAL_ORDERS = [
     status: 'pending_erp', // 'pending_erp' | 'synced_erp' | 'in_kitchen'
     erpDocNo: null,
     paymentTerm: 'Crédito 15 días (iDempiere 15D)',
-    warehouseRequested: 'HQ Warehouse (103)'
+    warehouseRequested: 'HQ Warehouse (103)',
+    deliveryAddress: 'Av. José Larco 812, Miraflores, Lima',
+    deliveryCoords: { lat: -12.1218, lng: -77.0298 },
+    defaultVehicle: 'moto'
   },
   {
     id: 'ORD-2026-102',
@@ -37,7 +41,10 @@ const INITIAL_ORDERS = [
     status: 'synced_erp',
     erpDocNo: 'CO-80042',
     paymentTerm: 'Pago Online Inmediato (Tarjeta)',
-    warehouseRequested: 'HQ Warehouse (103)'
+    warehouseRequested: 'HQ Warehouse (103)',
+    deliveryAddress: 'Calle Las Begonias 441, San Isidro, Lima',
+    deliveryCoords: { lat: -12.0925, lng: -77.0287 },
+    defaultVehicle: 'auto'
   },
   {
     id: 'ORD-2026-103',
@@ -56,7 +63,10 @@ const INITIAL_ORDERS = [
     status: 'pending_erp',
     erpDocNo: null,
     paymentTerm: 'Factura 30 días (iDempiere 30D)',
-    warehouseRequested: 'HQ Warehouse (103)'
+    warehouseRequested: 'HQ Warehouse (103)',
+    deliveryAddress: 'Av. Javier Prado Este 2465, San Borja, Lima',
+    deliveryCoords: { lat: -12.0864, lng: -77.0016 },
+    defaultVehicle: 'camion'
   },
   {
     id: 'ORD-2026-104',
@@ -75,7 +85,10 @@ const INITIAL_ORDERS = [
     status: 'pending_erp',
     erpDocNo: null,
     paymentTerm: 'Pago Contra Entrega (Efectivo)',
-    warehouseRequested: 'HQ Warehouse (103)'
+    warehouseRequested: 'HQ Warehouse (103)',
+    deliveryAddress: 'Av. Mariscal Sucre 1120, Jesús María, Lima',
+    deliveryCoords: { lat: -12.0782, lng: -77.0494 },
+    defaultVehicle: 'moto'
   }
 ];
 
@@ -84,6 +97,7 @@ export default function OrdersManagement({ session }) {
   const [originFilter, setOriginFilter] = useState('all'); // 'all' | 'pwa' | 'ecommerce'
   const [statusFilter, setStatusFilter] = useState('all'); // 'all' | 'pending_erp' | 'synced_erp'
   const [selectedOrderForPayload, setSelectedOrderForPayload] = useState(null);
+  const [selectedOrderForGps, setSelectedOrderForGps] = useState(null);
   const [isSyncing, setIsSyncing] = useState(null); // orderId being synced
 
   // Filtrado de pedidos
@@ -411,7 +425,28 @@ export default function OrdersManagement({ session }) {
                 </div>
 
                 {/* Actions */}
-                <div style={{ display: 'flex', gap: '8px' }}>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  <button
+                    onClick={() => setSelectedOrderForGps(order)}
+                    style={{
+                      background: '#0284c7',
+                      border: 'none',
+                      color: '#FFFFFF',
+                      padding: '8px 14px',
+                      borderRadius: '8px',
+                      fontSize: '0.8rem',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      boxShadow: '0 2px 6px rgba(2, 132, 199, 0.25)'
+                    }}
+                    title="Ver Seguimiento Satelital GPS y Ruteo"
+                  >
+                    🗺️ Ver GPS / Ruta
+                  </button>
+
                   <button
                     onClick={() => setSelectedOrderForPayload(order)}
                     style={{
@@ -480,10 +515,13 @@ export default function OrdersManagement({ session }) {
                 Cliente: <b style={{ color: '#0F172A' }}>{order.clientName}</b> ({order.clientTaxId})
               </div>
               <div>
+                📍 Entrega GPS: <b style={{ color: '#0F172A' }}>{order.deliveryAddress || 'Lima'}</b>
+              </div>
+              <div>
                 Término de Pago: <b>{order.paymentTerm}</b>
               </div>
               <div>
-                Almacén Destino: <b>{order.warehouseRequested}</b>
+                Almacén Origen: <b>{order.warehouseRequested}</b>
               </div>
             </div>
 
@@ -659,6 +697,15 @@ Accept: application/json`}
           </div>
         </div>
       )}
+
+      {/* Modal Seguimiento GPS Satelital en Tiempo Real */}
+      {selectedOrderForGps && (
+        <OrderTrackingModal
+          order={selectedOrderForGps}
+          onClose={() => setSelectedOrderForGps(null)}
+        />
+      )}
+
     </div>
   );
 }

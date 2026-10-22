@@ -416,8 +416,139 @@ function getDbStatus() {
   };
 }
 
+const INITIAL_ORDERS = [
+  {
+    id: 'ORD-2026-101',
+    origin: 'pwa',
+    originLabel: 'PWA Preventa',
+    agent: 'Juan Carlos Pérez (Vendedor Zona Norte)',
+    clientName: 'Restaurante El Roble Gourmet',
+    clientTaxId: 'RUC 20459812451',
+    date: '2026-10-20 17:45',
+    items: [
+      { name: 'Rey de las Burgers (Pack x10)', qty: 3, price: 140.00 },
+      { name: 'Burger Real Doble (Pack x10)', qty: 2, price: 120.00 },
+      { name: 'Papas Rústicas Trufadas (Caja 5kg)', qty: 4, price: 35.00 }
+    ],
+    totalAmount: 800.00,
+    status: 'pending_erp',
+    deliveryAddress: 'Av. José Larco 812, Miraflores, Lima',
+    deliveryCoords: { lat: -12.1218, lng: -77.0298 },
+    vehicle: 'moto'
+  },
+  {
+    id: 'ORD-2026-102',
+    origin: 'ecommerce',
+    originLabel: 'E-commerce Web',
+    agent: 'Cliente Directo (Portal Online)',
+    clientName: 'Carlos Mendoza',
+    clientTaxId: 'DNI 45892147',
+    date: '2026-10-20 18:20',
+    items: [
+      { name: 'Rey de las Burgers', qty: 2, price: 14.99 },
+      { name: 'French Fries Golden Crisp', qty: 2, price: 4.99 },
+      { name: 'Chocolate Shake Deluxe', qty: 2, price: 5.99 }
+    ],
+    totalAmount: 51.94,
+    status: 'synced_erp',
+    erpDocNo: 'CO-80042',
+    deliveryAddress: 'Calle Las Begonias 441, San Isidro, Lima',
+    deliveryCoords: { lat: -12.0925, lng: -77.0287 },
+    vehicle: 'auto'
+  },
+  {
+    id: 'ORD-2026-103',
+    origin: 'pwa',
+    originLabel: 'PWA Preventa',
+    agent: 'Sofía Valenzuela (Preventista Corporativa)',
+    clientName: 'Hotel Continental Plaza',
+    clientTaxId: 'RUC 20104859623',
+    date: '2026-10-20 18:50',
+    items: [
+      { name: 'Burger Trufa & Portobello (Event Pack)', qty: 5, price: 155.00 },
+      { name: 'Margherita Pizza Stone-Baked (Pack x5)', qty: 6, price: 65.00 },
+      { name: 'Iced Mint Citrus Cooler (Dispensador 10L)', qty: 2, price: 45.00 }
+    ],
+    totalAmount: 1255.00,
+    status: 'pending_erp',
+    deliveryAddress: 'Av. Javier Prado Este 2465, San Borja, Lima',
+    deliveryCoords: { lat: -12.0864, lng: -77.0016 },
+    vehicle: 'camion'
+  },
+  {
+    id: 'ORD-2026-104',
+    origin: 'ecommerce',
+    originLabel: 'E-commerce Web',
+    agent: 'Cliente Directo (Portal Online)',
+    clientName: 'Valentina Soto',
+    clientTaxId: 'DNI 71204859',
+    date: '2026-10-20 19:15',
+    items: [
+      { name: 'Burger Real Clásica', qty: 1, price: 9.99 },
+      { name: 'Loaded Bacon Truffle Fries', qty: 1, price: 7.99 },
+      { name: 'Oreo Deluxe Shake', qty: 1, price: 6.50 }
+    ],
+    totalAmount: 24.48,
+    status: 'pending_erp',
+    deliveryAddress: 'Av. Mariscal Sucre 1120, Jesús María, Lima',
+    deliveryCoords: { lat: -12.0782, lng: -77.0494 },
+    vehicle: 'moto'
+  }
+];
+
+let inMemoryOrders = [...INITIAL_ORDERS];
+
+async function getOrders() {
+  return inMemoryOrders;
+}
+
+async function addOrder(orderData) {
+  const newOrder = {
+    id: orderData.id || `ORD-2026-${Math.floor(100 + Math.random() * 900)}`,
+    origin: orderData.origin || 'ecommerce',
+    originLabel: orderData.originLabel || (orderData.origin === 'pwa' ? 'PWA Preventa' : 'E-commerce Web'),
+    agent: orderData.agent || 'Cliente Directo',
+    clientName: orderData.clientName || 'Cliente Gourmet',
+    clientTaxId: orderData.clientTaxId || 'DNI ' + Math.floor(10000000 + Math.random() * 90000000),
+    date: new Date().toISOString().replace('T', ' ').substring(0, 16),
+    items: orderData.items || [],
+    totalAmount: orderData.totalAmount || 0,
+    status: 'pending_erp',
+    erpDocNo: null,
+    paymentTerm: orderData.paymentTerm || 'Pago Online Inmediato',
+    warehouseRequested: 'HQ Warehouse (103)',
+    deliveryAddress: orderData.deliveryAddress || 'Av. José Larco 812, Miraflores, Lima',
+    deliveryCoords: orderData.deliveryCoords || { lat: -12.1218, lng: -77.0298 },
+    vehicle: orderData.vehicle || 'moto'
+  };
+  inMemoryOrders.unshift(newOrder);
+  return newOrder;
+}
+
+function getOrderTracking(id) {
+  const ord = inMemoryOrders.find(o => o.id === id);
+  if (!ord) return null;
+  return {
+    orderId: ord.id,
+    clientName: ord.clientName,
+    originWarehouse: {
+      name: 'Almacén Central San Isidro',
+      address: 'Av. Rivera Navarrete 501, San Isidro, Lima',
+      lat: -12.0969,
+      lng: -77.0354
+    },
+    destination: {
+      address: ord.deliveryAddress,
+      coords: ord.deliveryCoords
+    },
+    vehicle: ord.vehicle || 'moto',
+    status: ord.status
+  };
+}
+
 module.exports = {
   INITIAL_PRODUCTS,
+  INITIAL_ORDERS,
   initDB,
   getProducts,
   addProduct,
@@ -425,5 +556,9 @@ module.exports = {
   deleteProduct,
   resetProducts,
   getConsumerMetrics,
-  getDbStatus
+  getDbStatus,
+  getOrders,
+  addOrder,
+  getOrderTracking
 };
+
