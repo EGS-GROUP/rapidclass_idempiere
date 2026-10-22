@@ -395,6 +395,10 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   
+  <!-- Leaflet CSS & JS for Real-time GPS Satellite Tracking -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
   <style>
     :root {
       /* Brand Color Palette Replicating the Attached Design */
@@ -1797,6 +1801,91 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
       transform: translateY(0) scale(1);
     }
 
+    /* ==========================================================================
+       GPS TRACKING MODAL & NAVBAR BUTTON
+       ========================================================================== */
+    #gpsTrackingModal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+
+    #gpsTrackingModal.active {
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      visibility: visible !important;
+    }
+
+    #gpsTrackingModal .gps-modal-card {
+      background: #ffffff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 980px;
+      height: 90vh;
+      max-height: 800px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      border: 1px solid #334155;
+      transform: translateY(16px) scale(0.97);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #gpsTrackingModal.active .gps-modal-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .nav-gps-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(2, 132, 199, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      padding: 7px 14px;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .nav-gps-btn:hover {
+      background: rgba(2, 132, 199, 0.3);
+      border-color: #38bdf8;
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+
+    .nav-gps-live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      display: inline-block;
+      animation: navGpsPulse 1.8s infinite;
+    }
+
+    @keyframes navGpsPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.3); }
+    }
+
     .modal-close {
       position: absolute;
       top: 1rem;
@@ -1914,6 +2003,13 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
       .nav-links {
         display: none;
       }
+      .nav-gps-text {
+        display: none;
+      }
+      .nav-gps-btn {
+        padding: 8px;
+        border-radius: 50%;
+      }
       .footer-guarantees {
         flex-direction: column;
         align-items: flex-start;
@@ -1956,6 +2052,7 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
           <li><a href="#menu">Menú</a></li>
           <li><a href="#specials">Especialidades</a></li>
           <li><a href="#promos">Promociones</a></li>
+          <li><a href="javascript:void(0)" id="navLinkTracking">Rastrear Pedido</a></li>
           <li><a href="#order-now">Contacto</a></li>
         </ul>
       </nav>
@@ -1980,12 +2077,13 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
           <span class="cart-badge" id="cartBadgeCount">0</span>
         </button>
 
-        <!-- GPS Tracking Button -->
-        <button class="icon-btn" id="gpsNavTriggerBtn" title="Rastreo Satelital GPS en Vivo" aria-label="Rastrear Pedido GPS" style="position: relative; color: #38bdf8;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- GPS Tracking Button (Rastrear Pedido) -->
+        <button class="nav-gps-btn" id="gpsNavTriggerBtn" title="Rastreo Satelital GPS en Tiempo Real" aria-label="Rastrear Pedido GPS">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
           </svg>
-          <span style="position: absolute; top: -3px; right: -3px; width: 8px; height: 8px; background: #0284c7; border-radius: 50%; box-shadow: 0 0 8px #38bdf8;"></span>
+          <span class="nav-gps-text">Rastrear Pedido</span>
+          <span class="nav-gps-live-dot" title="En Vivo"></span>
         </button>
 
         <!-- Order Now CTA -->
@@ -2507,6 +2605,8 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
         </div>
 
         <div class="ecosystem-links">
+          <a href="javascript:void(0)" id="footerTrackingLink">🛰️ Rastrear Pedido</a>
+          <span>•</span>
           <a href="/app">📱 PWA Móvil</a>
           <span>•</span>
           <a href="/admin">⚙️ Panel Admin</a>
@@ -2620,8 +2720,8 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
   <!-- ==========================================================================
        MODAL DE SEGUIMIENTO GPS SATELITAL EN VIVO (Leaflet + Carto Voyager + OSRM)
        ========================================================================== -->
-  <div class="modal-overlay" id="gpsTrackingModal" style="display: none; align-items: center; justify-content: center; z-index: 99999; padding: 1rem; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px);">
-    <div style="background: #ffffff; border-radius: 16px; width: 100%; max-width: 980px; height: 90vh; max-height: 800px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4); border: 1px solid #334155;">
+  <div id="gpsTrackingModal">
+    <div class="gps-modal-card">
       
       <!-- Modal Header -->
       <div style="padding: 12px 20px; background: #0f172a; color: #ffffff; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
@@ -3011,27 +3111,21 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
     let gpsCurrentVehicle = 'moto';
     let leafletLoaded = false;
 
-    // Lazy load Leaflet on demand
+    // Lazy load or verify Leaflet on demand
     function loadLeafletEcommerce() {
-      if (window.L) return Promise.resolve(window.L);
-      return new Promise((resolve, reject) => {
-        if (!document.getElementById('leaflet-css')) {
-          const link = document.createElement('link');
-          link.id = 'leaflet-css';
-          link.rel = 'stylesheet';
-          link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-          document.head.appendChild(link);
-        }
-        const script = document.createElement('script');
-        script.id = 'leaflet-js';
-        script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-        script.async = true;
-        script.onload = () => {
-          leafletLoaded = true;
-          resolve(window.L);
-        };
-        script.onerror = reject;
-        document.head.appendChild(script);
+      if (typeof window !== 'undefined' && window.L) return Promise.resolve(window.L);
+      return new Promise((resolve) => {
+        let count = 0;
+        const check = setInterval(() => {
+          count++;
+          if (typeof window !== 'undefined' && window.L) {
+            clearInterval(check);
+            resolve(window.L);
+          } else if (count >= 50) {
+            clearInterval(check);
+            resolve(window.L || null);
+          }
+        }, 100);
       });
     }
 
@@ -3115,105 +3209,132 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
       gpsIsPlaying = true;
       gpsIsCompleted = false;
 
-      modal.style.display = 'flex';
-      overlay.style.display = 'flex';
-      successBanner.style.display = 'none';
+      // Hacer visible el modal activando la clase active
+      modal.classList.add('active');
+      if (overlay) overlay.style.display = 'flex';
+      if (successBanner) successBanner.style.display = 'none';
 
-      orderBadge.textContent = orderInfo?.orderId || 'TB-8492';
-      statusBadge.textContent = 'EN RUTA';
-      statusBadge.style.background = '#d97706';
-
-      const destAddr = orderInfo?.destAddress || 'Av. José Larco 812, Miraflores, Lima';
-      routeSub.textContent = `Almacén San Isidro ➔ ${destAddr}`;
-
-      const L = await loadLeafletEcommerce();
-      const destCoords = await geocodeDeliveryAddress(destAddr);
-      const route = await fetchOsrmRoute(CENTRAL_SAN_ISIDRO, destCoords);
-      gpsRouteData = route;
-
-      overlay.style.display = 'none';
-
-      if (gpsMap) {
-        try { gpsMap.remove(); } catch (e) {}
-        gpsMap = null;
+      if (orderBadge) orderBadge.textContent = orderInfo?.orderId || 'TB-8492';
+      if (statusBadge) {
+        statusBadge.textContent = 'EN RUTA';
+        statusBadge.style.background = '#d97706';
       }
 
-      gpsMap = L.map('ecommerceLeafletMap', {
-        maxBounds: PERU_BOUNDS,
-        minZoom: 6,
-        maxZoom: 19
-      });
+      const destAddr = orderInfo?.destAddress || 'Av. José Larco 812, Miraflores, Lima';
+      if (routeSub) routeSub.textContent = `Almacén San Isidro ➔ ${destAddr}`;
 
-      setTimeout(() => {
-        if (gpsMap) gpsMap.invalidateSize();
-      }, 250);
+      try {
+        const L = await loadLeafletEcommerce();
+        const destCoords = await geocodeDeliveryAddress(destAddr);
+        const route = await fetchOsrmRoute(CENTRAL_SAN_ISIDRO, destCoords);
+        gpsRouteData = route;
 
-      const tileLayer = L.tileLayer(CARTO_URL, {
-        attribution: '&copy; OpenStreetMap &copy; CARTO',
-        maxZoom: 19
-      });
-      tileLayer.on('tileerror', () => {
-        tileLayer.setUrl(CARTO_FALLBACK);
-      });
-      tileLayer.addTo(gpsMap);
+        if (overlay) overlay.style.display = 'none';
 
-      const whIcon = L.divIcon({
-        html: '<div style="background:#1e293b; color:#fff; border:2px solid #38bdf8; border-radius:50%; width:34px; height:34px; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 8px rgba(0,0,0,0.3); font-size:18px;">🏭</div>',
-        iconSize: [34, 34],
-        iconAnchor: [17, 17]
-      });
+        const mapContainer = document.getElementById('ecommerceLeafletMap');
+        if (gpsMap) {
+          try { gpsMap.remove(); } catch (e) {}
+          gpsMap = null;
+        }
+        if (mapContainer && mapContainer._leaflet_id) {
+          delete mapContainer._leaflet_id;
+        }
 
-      const clientIcon = L.divIcon({
-        html: '<div style="background:#b45309; color:#fff; border:2px solid #fef08a; border-radius:50%; width:34px; height:34px; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 8px rgba(0,0,0,0.3); font-size:18px;">📍</div>',
-        iconSize: [34, 34],
-        iconAnchor: [17, 17]
-      });
+        if (!L || !mapContainer) return;
 
-      L.marker([CENTRAL_SAN_ISIDRO.lat, CENTRAL_SAN_ISIDRO.lng], { icon: whIcon }).addTo(gpsMap)
-        .bindPopup('<b>Almacén Central San Isidro</b><br/>Av. Rivera Navarrete 501');
+        gpsMap = L.map('ecommerceLeafletMap', {
+          maxBounds: PERU_BOUNDS,
+          minZoom: 6,
+          maxZoom: 19
+        });
 
-      L.marker([destCoords.lat, destCoords.lng], { icon: clientIcon }).addTo(gpsMap)
-        .bindPopup(`<b>Destino Cliente:</b><br/>${destAddr}`);
+        // Asegurar que el mapa se renderice con las dimensiones exactas del modal
+        setTimeout(() => {
+          if (gpsMap) gpsMap.invalidateSize();
+        }, 80);
+        setTimeout(() => {
+          if (gpsMap) gpsMap.invalidateSize();
+        }, 250);
 
-      const fullRouteLine = L.polyline(route.points, {
-        color: '#0284c7',
-        weight: 4,
-        opacity: 0.85
-      }).addTo(gpsMap);
+        const tileLayer = L.tileLayer(CARTO_URL, {
+          attribution: '&copy; OpenStreetMap &copy; CARTO',
+          maxZoom: 19
+        });
+        tileLayer.on('tileerror', () => {
+          tileLayer.setUrl(CARTO_FALLBACK);
+        });
+        tileLayer.addTo(gpsMap);
 
-      gpsTraveledLine = L.polyline([route.points[0]], {
-        color: '#10b981',
-        weight: 4,
-        opacity: 0.95
-      }).addTo(gpsMap);
+        const whIcon = L.divIcon({
+          html: '<div style="background:#1e293b; color:#fff; border:2px solid #38bdf8; border-radius:50%; width:34px; height:34px; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 8px rgba(0,0,0,0.3); font-size:18px;">🏭</div>',
+          iconSize: [34, 34],
+          iconAnchor: [17, 17]
+        });
 
-      gpsMap.fitBounds(fullRouteLine.getBounds(), { padding: [40, 40] });
+        const clientIcon = L.divIcon({
+          html: '<div style="background:#b45309; color:#fff; border:2px solid #fef08a; border-radius:50%; width:34px; height:34px; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 8px rgba(0,0,0,0.3); font-size:18px;">📍</div>',
+          iconSize: [34, 34],
+          iconAnchor: [17, 17]
+        });
 
-      const veh = VEHICLE_DATA[gpsCurrentVehicle];
-      const vIcon = L.divIcon({
-        html: `<div style="position:relative; width:40px; height:40px; display:flex; align-items:center; justify-content:center;">
-          <div style="position:absolute; width:100%; height:100%; border-radius:50%; background:rgba(2,132,199,0.35); animation:gpsPulse 2s infinite;"></div>
-          <div style="width:34px; height:34px; border-radius:50%; background:#fff; border:2px solid #0284c7; display:flex; align-items:center; justify-content:center; font-size:18px; box-shadow:0 3px 8px rgba(0,0,0,0.25); z-index:2;">${veh.icon}</div>
-        </div>`,
-        iconSize: [40, 40],
-        iconAnchor: [20, 20]
-      });
+        L.marker([CENTRAL_SAN_ISIDRO.lat, CENTRAL_SAN_ISIDRO.lng], { icon: whIcon }).addTo(gpsMap)
+          .bindPopup('<b>Almacén Central San Isidro</b><br/>Av. Rivera Navarrete 501');
 
-      gpsVehicleMarker = L.marker(route.points[0], { icon: vIcon, zIndexOffset: 1000 }).addTo(gpsMap);
+        L.marker([destCoords.lat, destCoords.lng], { icon: clientIcon }).addTo(gpsMap)
+          .bindPopup(`<b>Destino Cliente:</b><br/>${destAddr}`);
 
-      gpsProgress = 0;
-      gpsIsPlaying = true;
-      gpsIsCompleted = false;
-      startGpsSimulation();
+        const fullRouteLine = L.polyline(route.points, {
+          color: '#0284c7',
+          weight: 4,
+          opacity: 0.85
+        }).addTo(gpsMap);
+
+        gpsTraveledLine = L.polyline([route.points[0]], {
+          color: '#10b981',
+          weight: 4,
+          opacity: 0.95
+        }).addTo(gpsMap);
+
+        gpsMap.fitBounds(fullRouteLine.getBounds(), { padding: [40, 40] });
+
+        const veh = VEHICLE_DATA[gpsCurrentVehicle] || VEHICLE_DATA.moto;
+        const vIcon = L.divIcon({
+          html: `<div style="position:relative; width:40px; height:40px; display:flex; align-items:center; justify-content:center;">
+            <div style="position:absolute; width:100%; height:100%; border-radius:50%; background:rgba(2,132,199,0.35); animation:gpsPulse 2s infinite;"></div>
+            <div style="width:34px; height:34px; border-radius:50%; background:#fff; border:2px solid #0284c7; display:flex; align-items:center; justify-content:center; font-size:18px; box-shadow:0 3px 8px rgba(0,0,0,0.25); z-index:2;">${veh.icon}</div>
+          </div>`,
+          iconSize: [40, 40],
+          iconAnchor: [20, 20]
+        });
+
+        gpsVehicleMarker = L.marker(route.points[0], { icon: vIcon, zIndexOffset: 1000 }).addTo(gpsMap);
+
+        gpsProgress = 0;
+        gpsIsPlaying = true;
+        gpsIsCompleted = false;
+        startGpsSimulation();
+      } catch (err) {
+        console.error('Error al iniciar seguimiento GPS:', err);
+        if (overlay) overlay.style.display = 'none';
+      }
     }
 
     function closeGpsModal() {
       const modal = document.getElementById('gpsTrackingModal');
-      if (modal) modal.style.display = 'none';
-      if (gpsAnimId) cancelAnimationFrame(gpsAnimId);
+      if (modal) {
+        modal.classList.remove('active');
+      }
+      if (gpsAnimId) {
+        cancelAnimationFrame(gpsAnimId);
+        gpsAnimId = null;
+      }
       if (gpsMap) {
-        gpsMap.remove();
+        try { gpsMap.remove(); } catch (e) {}
         gpsMap = null;
+      }
+      const mapContainer = document.getElementById('ecommerceLeafletMap');
+      if (mapContainer && mapContainer._leaflet_id) {
+        delete mapContainer._leaflet_id;
       }
     }
 
@@ -3232,7 +3353,7 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
       const statusBadge = document.getElementById('gpsStatusBadge');
       const successBanner = document.getElementById('gpsSuccessBanner');
 
-      if (!gpsRouteData || !gpsRouteData.points || gpsRouteData.points.length < 2) return;
+      if (!gpsRouteData || !gpsRouteData.points || !Array.isArray(gpsRouteData.points) || gpsRouteData.points.length < 2) return;
       const points = gpsRouteData.points;
       const totalPts = points.length;
       const baseMs = 28000;
@@ -3276,8 +3397,10 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
         const high = Math.max(0, Math.min(totalPts - 1, low + 1));
         const t = floatIdx - low;
 
-        const p1 = points[low] || points[0];
+        const p1 = points[low] || points[0] || [CENTRAL_SAN_ISIDRO.lat, CENTRAL_SAN_ISIDRO.lng];
         const p2 = points[high] || p1;
+        if (!p1 || !p2 || typeof p1[0] !== 'number' || typeof p2[0] !== 'number') return;
+
         const curLat = p1[0] + (p2[0] - p1[0]) * t;
         const curLng = p1[1] + (p2[1] - p1[1]) * t;
         const curPos = [curLat, curLng];
@@ -3290,7 +3413,7 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
         }
 
         const veh = VEHICLE_DATA[gpsCurrentVehicle] || VEHICLE_DATA.moto;
-        const remKm = Number((gpsRouteData.distanceKm * (1 - gpsProgress / 100)).toFixed(2));
+        const remKm = Number(((gpsRouteData.distanceKm || 4.85) * (1 - gpsProgress / 100)).toFixed(2));
         if (remKmEl) remKmEl.textContent = `${remKm.toFixed(2)} km`;
         if (etaEl) etaEl.textContent = formatEtaMinutes(remKm, veh.speed);
         if (speedEl) speedEl.textContent = `${Math.round(veh.speed * (gpsSimSpeed || 1))} km/h`;
@@ -3306,10 +3429,32 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
       gpsAnimId = requestAnimationFrame(loop);
     }
 
-    // Modal Events
-    document.getElementById('closeGpsModalBtn')?.addEventListener('click', closeGpsModal);
-    document.getElementById('gpsNavTriggerBtn')?.addEventListener('click', () => {
+    // Modal & Tracking Trigger Events
+    const triggerTracking = (e) => {
+      if (e) e.preventDefault();
       openGpsModal({ orderId: 'TB-8492', destAddress: 'Av. José Larco 812, Miraflores, Lima' });
+    };
+
+    document.getElementById('gpsNavTriggerBtn')?.addEventListener('click', triggerTracking);
+    document.getElementById('navLinkTracking')?.addEventListener('click', triggerTracking);
+    document.getElementById('footerTrackingLink')?.addEventListener('click', triggerTracking);
+    document.getElementById('closeGpsModalBtn')?.addEventListener('click', closeGpsModal);
+
+    // Cerrar al hacer clic en el fondo del modal
+    document.getElementById('gpsTrackingModal')?.addEventListener('click', (e) => {
+      if (e.target && e.target.id === 'gpsTrackingModal') {
+        closeGpsModal();
+      }
+    });
+
+    // Cerrar con la tecla Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('gpsTrackingModal');
+        if (modal && modal.classList.contains('active')) {
+          closeGpsModal();
+        }
+      }
     });
 
     document.getElementById('gpsPlayPauseBtn')?.addEventListener('click', (e) => {
