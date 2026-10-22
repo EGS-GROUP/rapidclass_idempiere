@@ -20,7 +20,7 @@ export default function AuthGuard({ children }) {
   };
 
   const handleLogout = () => {
-    if (confirm('¿Deseas cerrar la sesión de iDempiere ERP y salir del Panel de Control?')) {
+    if (confirm('¿Deseas cerrar tu sesión y salir del Panel Corporativo?')) {
       authService.logout();
       setSession(null);
     }
@@ -40,7 +40,7 @@ export default function AuthGuard({ children }) {
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>⏳</div>
           <div style={{ fontSize: '1rem', fontWeight: '700', color: '#F5A623' }}>
-            Verificando sesión activa con iDempiere ERP...
+            Verificando sesión autorizada...
           </div>
         </div>
       </div>

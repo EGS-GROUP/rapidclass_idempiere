@@ -348,6 +348,48 @@ export function logout() {
   }
 }
 
+export const CONFIG_KEY = 'erp_connection_config';
+
+export const DEFAULT_ERP_CONFIG = {
+  serverUrl: 'https://test.idempiere.org:443',
+  useCorsProxy: false,
+  corsProxyUrl: '',
+  loginMode: 'direct', // 'direct' (1 paso) | 'assisted' (2 pasos asistido multitenant)
+  clientId: 11,
+  roleId: 102,
+  organizationId: 11,
+  warehouseId: 103,
+  language: 'en_US'
+};
+
+/**
+ * Obtener la configuración de conexión y parámetros guardados en Perfil
+ */
+export function getErpConfig() {
+  try {
+    const raw = localStorage.getItem(CONFIG_KEY);
+    if (!raw) return { ...DEFAULT_ERP_CONFIG };
+    return { ...DEFAULT_ERP_CONFIG, ...JSON.parse(raw) };
+  } catch (e) {
+    return { ...DEFAULT_ERP_CONFIG };
+  }
+}
+
+/**
+ * Guardar la configuración de conexión y parámetros en Perfil
+ */
+export function saveErpConfig(config) {
+  try {
+    const current = getErpConfig();
+    const updated = { ...current, ...config };
+    localStorage.setItem(CONFIG_KEY, JSON.stringify(updated));
+    return updated;
+  } catch (e) {
+    console.error('Error guardando configuración:', e);
+    return null;
+  }
+}
+
 export default {
   buildApiUrl,
   normalizeLoginParameters,
@@ -363,5 +405,8 @@ export default {
   getToken,
   getContext,
   getAuthHeaders,
-  logout
+  logout,
+  getErpConfig,
+  saveErpConfig,
+  DEFAULT_ERP_CONFIG
 };

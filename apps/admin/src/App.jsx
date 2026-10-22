@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AuthGuard from './components/AuthGuard';
 import OrdersManagement from './components/OrdersManagement';
+import ProfileSection from './components/ProfileSection';
 
 const FALLBACK_BURGERS = [
   {
@@ -467,21 +468,27 @@ function AdminDashboard({ session, logout }) {
 
         {/* Database & Quick Links & ERP Session Context */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          {/* Active iDempiere ERP Context Badge */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            background: '#FFFBEB',
-            border: '1px solid #FDE68A',
-            padding: '6px 12px',
-            borderRadius: '20px',
-            fontSize: '0.78rem',
-            fontWeight: '700',
-            color: '#92400E'
-          }}>
-            <span>🏢 ERP: <b>{session?.clientId}</b> &bull; {session?.userName}</span>
-          </div>
+          {/* Active Context Badge -> Links to Profile */}
+          <button
+            onClick={() => setActiveSection('profile')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: activeSection === 'profile' ? '#FEF3C7' : '#FFFBEB',
+              border: '1px solid',
+              borderColor: activeSection === 'profile' ? '#F59E0B' : '#FDE68A',
+              padding: '6px 12px',
+              borderRadius: '20px',
+              fontSize: '0.78rem',
+              fontWeight: '700',
+              color: '#92400E',
+              cursor: 'pointer'
+            }}
+            title="Ver Perfil y Configuración de Conexión"
+          >
+            <span>👤 Sesión: <b>{session?.userName || 'Admin'}</b> (Org #{session?.organizationId || session?.orgId || '11'})</span>
+          </button>
 
           <div style={{
             display: 'flex',
@@ -536,7 +543,7 @@ function AdminDashboard({ session, logout }) {
             📱 App Móvil PWA
           </a>
 
-          {/* Cerrar Sesión ERP */}
+          {/* Cerrar Sesión */}
           <button
             onClick={logout}
             style={{
@@ -552,7 +559,7 @@ function AdminDashboard({ session, logout }) {
               alignItems: 'center',
               gap: '6px'
             }}
-            title="Cerrar sesión en iDempiere ERP"
+            title="Cerrar sesión autorizada"
           >
             <span>🚪 Cerrar Sesión</span>
           </button>
@@ -632,7 +639,8 @@ function AdminDashboard({ session, logout }) {
             { key: 'orders', label: '📦 Bandeja de Pedidos & Sincronización ERP (3 Capas)', count: 4 },
             { key: 'burgers', label: '🍔 Catálogo de Hamburguesas', count: burgers.length },
             { key: 'consumers', label: '👥 Métricas de Consumidores / Clientes', count: metrics.totalCustomers },
-            { key: 'database', label: '🗄️ Estado de la Base de Datos & Telemetría' }
+            { key: 'database', label: '🗄️ Estado de la Base de Datos & Telemetría' },
+            { key: 'profile', label: '👤 Perfil & Conexión' }
           ].map(tab => (
             <button
               key={tab.key}
@@ -1172,6 +1180,11 @@ function AdminDashboard({ session, logout }) {
 
             </div>
           </div>
+        )}
+
+        {/* SECTION 5: PROFILE & BLINDED CONNECTION CONFIGURATION */}
+        {activeSection === 'profile' && (
+          <ProfileSection session={session} />
         )}
 
       </main>

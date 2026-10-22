@@ -77,18 +77,23 @@ El repositorio está estructurado como un **monorepo desacoplado** de alto rendi
 ### Capa 3: Panel de Administración & Control ERP (`apps/admin`)
 - **Tecnología**: [React 18](https://react.dev/) + [Vite 5](https://vitejs.dev/).
 - **Ruta en producción**: `http://localhost:3000/admin` | **Dev server**: `http://localhost:5173/admin/`
-- **Módulo de Autenticación iDempiere REST API v1**:
-  - **Acceso Universal**: Cualquier usuario con credenciales activas en iDempiere puede ingresar (sin restricción de roles predefinidos).
+- **Módulo de Autenticación Blindado & Control de Acceso (`LoginModal.jsx`)**:
+  - **Blindaje contra Atacantes (Zero Backend Leak)**: Oculta la dirección del servidor y los parámetros de conexión de la pantalla pública de login; elimina cualquier rastro del backend utilizado (sin exponer nombres de servidores ni botones de demo).
+  - **Interfaz Unificada & Ejecutiva**: Solo solicita Usuario y Contraseña corporativos.
+  - **Doble Comportamiento Configurable**:
+    - *Modo 1 (Directo / 1 Paso)*: Si está configurado en el perfil, autentica directamente usando los parámetros corporativos guardados de forma transparente.
+    - *Modo 2 (Asistido Multi-Tenant)*: Si está activado en el perfil, al validar usuario y contraseña despliega selectores dinámicos en cascada (Tenant ➔ Rol ➔ Organización ➔ Almacén).
   - **Servicio Desacoplado (`apps/admin/src/services/authService.js`)**: Diseñado como módulo portátil para ser reutilizado en la PWA de pedidos. Soporta:
     - `loginDirect(...)`: Envío directo en 1 paso con parámetros normalizados.
     - `loginStep1(...)`: Validación previa de usuario y contraseña con emisión de token temporal.
     - `fetchRoles(...)`, `fetchOrganizations(...)`, `fetchWarehouses(...)`: Consultas en cascada para multitenant dinámico.
+    - `getErpConfig()`, `saveErpConfig(...)`: Persistencia local de servidor, proxy CORS y parámetros de contexto.
     - `saveSession(...)`, `getSession(...)`, `logout(...)`: Persistencia de sesión en `sessionStorage` y `localStorage`.
-  - **Componente de Login Dual (`LoginModal.jsx`)**:
-    - *Modalidad 1 (Login Directo)*: Usuario, contraseña y parámetros fijos (`clientId`, `roleId`, `orgId`, `warehouseId`, `language`).
-    - *Modalidad 2 (Asistido Multitenant)*: Validación de credenciales en Paso 1 y selectores dinámicos en cascada en Paso 2 (Tenant ➔ Rol ➔ Organización ➔ Almacén).
-    - *Botón "⚡ Cargar Demo GardenWorld"*: Autocompleta `https://test.idempiere.org:443`, `admin @ gardenworld.com`, `GardenAdmin`, Client 11, Rol 102, Org 11, Almacén 103, Idioma en_US.
-    - *Selector de Proxy CORS*: Conmutador para activar/desactivar proxy CORS con URL editable para servidores sin headers preflight.
+  - **Sección de Perfil & Conexión Corporativa (`ProfileSection.jsx`)**:
+    - Pestaña dedicada en el panel para administradores autenticados.
+    - Asignación segura y privada de la URL del Servidor (`serverUrl`), con soporte de Proxy CORS configurable y botón de diagnóstico de conectividad (`ping / probe`).
+    - Definición de parámetros predeterminados de acceso (Tenant ID, Rol ID, Org ID, Almacén ID, Idioma).
+    - Conmutador checkbox para alternar entre Login Directo en 1 Paso o Modo Asistido Multi-Tenant.
   - **Guard de Protección (`AuthGuard.jsx`)**: Intercepta el acceso; si no hay token Bearer válido exige autenticación; si la sesión es válida, inyecta el contexto de trabajo y provee el botón de **Cerrar Sesión**.
 - **Bandeja Central de Gestión de Pedidos & ERP (`OrdersManagement.jsx`)**:
   - Supervisión omnicanal de pedidos unificados.
@@ -308,7 +313,7 @@ Módulo transversal omnicanal integrado en las 3 capas para la demostración de 
 - **Estado de Entrega**: Al completar el 100%, conmuta a `"¡Pedido Entregado con Éxito!"`.
 
 ### Puntos de Acceso en las 3 Capas
-1. **E-commerce (`/`)**: Botón satelital en el navbar (`#gpsNavTriggerBtn`) y modal automático al confirmar el pedido en el carrito.
+1. **E-commerce (`/`)**: Botón satelital con texto e indicador en vivo en el navbar (`#gpsNavTriggerBtn`) y modal interactivo automático al confirmar compra en el carrito.
 2. **PWA Mobile (`/app`)**: Botón `"🗺️ Ver Seguimiento GPS Satelital en Vivo"` en cada orden activa de la pestaña *Órdenes*.
 3. **Panel Admin (`/admin`)**: Botón `"🗺️ Ver GPS / Ruta"` en la bandeja central de pedidos omnicanal (`OrdersManagement.jsx`).
 4. **Backend API (`/api/orders`, `/api/orders/:id/track`)**: Endpoints REST con datos de origen, destino y vehículo asignado.
