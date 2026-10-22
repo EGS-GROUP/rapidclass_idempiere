@@ -54,7 +54,7 @@ const INITIAL_PRODUCTS = [
     rating: 4.9,
     calories: '920 kcal',
     prepTime: '12-14 min',
-    image: 'https://images.unsplash.com/photo-1583032015879-bf67245d55e5?w=800&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1586816001966-79b736744398?w=800&auto=format&fit=crop&q=80',
     description: 'Doble blend premium de picaña y asado de tira, queso Monterrey Jack fundido con pimientos asados, huevo de campo frito con yema trufada, jamón serrano crocante y mayonesa de ajo negro.'
   },
   {
