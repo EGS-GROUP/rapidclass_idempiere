@@ -6,9 +6,9 @@ const title = "Tasty Bites | Fast Food Gourmet & Hamburguesas de Autor";
 const popularDishes = [
   {
     id: "pop-1",
-    name: "Margherita Pizza",
+    name: "Pizza Margherita Artesanal",
     category: "Combos",
-    badge: "Popular",
+    badge: "Más Pedida",
     badgeType: "hot",
     price: 12.99,
     displayPrice: "$12.99",
@@ -18,15 +18,15 @@ const popularDishes = [
     calories: "820 kcal",
     prepTime: "12-15 min",
     image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&auto=format&fit=crop&q=80",
-    description: "Fresh tomatoes, mozzarella, with a hint of basil on stone-baked crust.",
+    description: "Tomates frescos seleccionados, mozzarella de búfala fundida y albahaca sobre masa horneada a la piedra.",
     ingredients: ["Salsa de Tomate San Marzano", "Queso Mozzarella de Búfala Fundido", "Hojas de Albahaca Fresca", "Aceite de Oliva Extra Virgen", "Masa Madre Fermentada 48h"],
     pairing: "Refresco Artesanal de Limón & Menta"
   },
   {
     id: "pop-2",
-    name: "Classic Burger",
+    name: "Burger Clásica de la Casa",
     category: "Burgers",
-    badge: "Best Seller",
+    badge: "La Más Vendida",
     badgeType: "gold",
     price: 9.99,
     displayPrice: "$9.99",
@@ -36,15 +36,15 @@ const popularDishes = [
     calories: "650 kcal",
     prepTime: "8-10 min",
     image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&auto=format&fit=crop&q=80",
-    description: "Juicy patty, fresh veggies, our special sauce.",
+    description: "Carne jugosa a la plancha, vegetales frescos del huerto y nuestra salsa imperial secreta.",
     ingredients: ["Carne de Res Seleccionada 180g", "Doble Cheddar Fundido", "Pepinillos Agridulces", "Lechuga Romana & Tomate", "Emulsión Imperial Secreta"],
     pairing: "Papas Fritas Clásicas & Cola Artesanal"
   },
   {
     id: "pop-3",
-    name: "French Fries",
+    name: "Papas Fritas Clásicas",
     category: "Sides",
-    badge: "Crispy",
+    badge: "Súper Crocantes",
     badgeType: "gold",
     price: 4.99,
     displayPrice: "$4.99",
@@ -54,15 +54,15 @@ const popularDishes = [
     calories: "380 kcal",
     prepTime: "5-7 min",
     image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=800&auto=format&fit=crop&q=80",
-    description: "Crispy, golden and absolutely delicious.",
+    description: "Crujientes, doradas a la perfección y deliciosamente sazonadas con sal marina ahumada.",
     ingredients: ["Papas Rústicas de Corte Grueso", "Sal Marina Ahumada", "Romero & Especias Dulces", "Dip de Queso Cheddar Fundido"],
     pairing: "Cualquiera de nuestras Hamburguesas de Autor"
   },
   {
     id: "pop-4",
-    name: "Chocolate Shake",
+    name: "Malteada de Chocolate Belga",
     category: "Desserts",
-    badge: "Sweet Indulgence",
+    badge: "Tentación Dulce",
     badgeType: "purple",
     price: 5.99,
     displayPrice: "$5.99",
@@ -72,7 +72,7 @@ const popularDishes = [
     calories: "520 kcal",
     prepTime: "5 min",
     image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=800&auto=format&fit=crop&q=80",
-    description: "Rich, creamy and full of chocolatey goodness.",
+    description: "Rica, cremosa y repleta del más puro e intenso cacao dulce artesanal.",
     ingredients: ["Helado Artesanal de Chocolate Belga", "Crema Batida Espesa", "Sirope Fudge de Cacao Oscuro", "Virutas de Chocolate & Galleta"],
     pairing: "El cierre dulce perfecto para cualquier combo"
   }
@@ -80,13 +80,13 @@ const popularDishes = [
 
 // 2. Categories for the circular carousel ("Something for Every Craving")
 const cravingCategories = [
-  { id: "Burgers", name: "Burgers", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&auto=format&fit=crop&q=80", count: 10 },
-  { id: "Loaded Fries", name: "Loaded Fries", image: "https://images.unsplash.com/photo-1585109649139-366815a0d713?w=300&auto=format&fit=crop&q=80", count: 4 },
-  { id: "Wraps", name: "Wraps", image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=300&auto=format&fit=crop&q=80", count: 3 },
-  { id: "Sides", name: "Sides", image: "https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=300&auto=format&fit=crop&q=80", count: 5 },
-  { id: "Beverages", name: "Beverages", image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=300&auto=format&fit=crop&q=80", count: 4 },
+  { id: "Burgers", name: "Hamburguesas", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&auto=format&fit=crop&q=80", count: 10 },
+  { id: "Loaded Fries", name: "Papas Rústicas", image: "https://images.unsplash.com/photo-1585109649139-366815a0d713?w=300&auto=format&fit=crop&q=80", count: 4 },
+  { id: "Wraps", name: "Wraps & Rollos", image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=300&auto=format&fit=crop&q=80", count: 3 },
+  { id: "Sides", name: "Guarniciones", image: "https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=300&auto=format&fit=crop&q=80", count: 5 },
+  { id: "Beverages", name: "Bebidas", image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=300&auto=format&fit=crop&q=80", count: 4 },
   { id: "Combos", name: "Combos", image: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=300&auto=format&fit=crop&q=80", count: 6 },
-  { id: "Desserts", name: "Desserts", image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=300&auto=format&fit=crop&q=80", count: 4 }
+  { id: "Desserts", name: "Postres", image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=300&auto=format&fit=crop&q=80", count: 4 }
 ];
 
 // 3. Full catalog retaining the existing 10 signature hamburgers from the project
@@ -279,7 +279,7 @@ const extraCategoryDishes = [
     id: "side-2",
     name: "Loaded Bacon Truffle Fries",
     category: "Loaded Fries",
-    badge: "Crispy Delight",
+    badge: "Delicia Crocante",
     badgeClass: "badge-amber",
     price: 7.99,
     displayPrice: "$7.99",
@@ -296,7 +296,7 @@ const extraCategoryDishes = [
     id: "wrap-1",
     name: "Crispy Chicken Caesar Wrap",
     category: "Wraps",
-    badge: "Fresh & Tasty",
+    badge: "Fresco & Sabroso",
     badgeClass: "badge-green",
     price: 8.99,
     displayPrice: "$8.99",
@@ -313,7 +313,7 @@ const extraCategoryDishes = [
     id: "side-3",
     name: "Golden Beer Onion Rings",
     category: "Sides",
-    badge: "Crunchy",
+    badge: "Crujiente",
     badgeClass: "badge-gold",
     price: 5.50,
     displayPrice: "$5.50",
@@ -330,7 +330,7 @@ const extraCategoryDishes = [
     id: "bev-1",
     name: "Iced Mint Citrus Cooler",
     category: "Beverages",
-    badge: "Refreshing",
+    badge: "Refrescante",
     badgeClass: "badge-emerald",
     price: 3.99,
     displayPrice: "$3.99",
@@ -364,7 +364,7 @@ const extraCategoryDishes = [
     id: "des-2",
     name: "Oreo Deluxe Shake",
     category: "Desserts",
-    badge: "Best Dessert",
+    badge: "Mejor Postre",
     badgeClass: "badge-purple",
     price: 6.50,
     displayPrice: "$6.50",
@@ -388,7 +388,7 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{title}</title>
-  <meta name="description" content="Tasty Bites & Hamburger Rapid - Food Made with Love. Fast food gourmet, hamburguesas de autor, pizzas artesanales y delivery rápido." />
+  <meta name="description" content="Tasty Bites & Hamburger Rapid - Comida Hecha con Amor. Fast food gourmet, hamburguesas de autor, pizzas artesanales y delivery rápido." />
   
   <!-- Google Fonts: Plus Jakarta Sans for modern typography + Caveat for handwritten script / doodles -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1619,56 +1619,88 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
       gap: 1rem;
     }
 
+    :global(.cart-item-row),
     .cart-item-row {
       display: flex;
-      gap: 1rem;
+      gap: 0.85rem;
       align-items: center;
       background: #FAF8F5;
-      padding: 0.85rem;
-      border-radius: var(--radius-sm);
+      padding: 0.75rem 0.85rem;
+      border-radius: 14px;
       border: 1px solid var(--cream-border);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+      width: 100%;
     }
 
+    :global(.cart-item-row:hover),
+    .cart-item-row:hover {
+      background: #FFFFFF;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+      border-color: #E2DDD5;
+    }
+
+    :global(.cart-item-img),
     .cart-item-img {
-      width: 64px;
-      height: 64px;
+      width: 58px !important;
+      height: 58px !important;
+      min-width: 58px !important;
+      max-width: 58px !important;
       border-radius: 10px;
       object-fit: cover;
       flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      display: block;
     }
 
+    :global(.cart-item-details),
     .cart-item-details {
       flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
     }
 
+    :global(.cart-item-title),
     .cart-item-title {
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       color: var(--text-dark);
-      line-height: 1.2;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
+    :global(.cart-item-price),
     .cart-item-price {
       font-weight: 800;
-      color: var(--text-dark);
+      color: #D97706;
       font-size: 0.9rem;
-      margin-top: 0.25rem;
+      font-variant-numeric: tabular-nums;
     }
 
+    :global(.cart-qty-ctrl),
     .cart-qty-ctrl {
       display: flex;
       align-items: center;
-      gap: 0.45rem;
+      gap: 0.35rem;
       background: #FFFFFF;
       border: 1px solid var(--cream-border);
       border-radius: var(--radius-pill);
-      padding: 0.2rem 0.5rem;
+      padding: 0.2rem 0.45rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      flex-shrink: 0;
     }
 
+    :global(.qty-btn),
     .qty-btn {
-      background: transparent;
-      width: 22px;
-      height: 22px;
+      background: #F3EFEA;
+      border: none;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -1677,18 +1709,24 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
       font-weight: 800;
       cursor: pointer;
       color: var(--text-dark);
+      transition: all 0.15s ease;
     }
 
+    :global(.qty-btn:hover),
     .qty-btn:hover {
-      color: var(--primary-dark);
+      background: var(--primary);
+      color: #1A1305;
+      transform: scale(1.08);
     }
 
+    :global(.cart-empty-state),
     .cart-empty-state {
       text-align: center;
       padding: 3rem 1.5rem;
       color: var(--text-muted);
     }
 
+    :global(.cart-empty-icon),
     .cart-empty-icon {
       font-size: 3.5rem;
       margin-bottom: 1rem;
@@ -1907,18 +1945,18 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
         </div>
         <div class="brand-logo-text">
           <div class="brand-logo-name">Tasty <span>Bites</span></div>
-          <div class="brand-logo-sub">GOOD FOOD • HAPPY MOOD</div>
+          <div class="brand-logo-sub">BUENA COMIDA • BUENA VIBRA</div>
         </div>
       </a>
 
       <!-- Navigation Links -->
       <nav>
         <ul class="nav-links">
-          <li><a href="#hero" class="active">Home</a></li>
-          <li><a href="#menu">Menu</a></li>
-          <li><a href="#specials">About</a></li>
-          <li><a href="#promos">Gallery</a></li>
-          <li><a href="#order-now">Contact</a></li>
+          <li><a href="#hero" class="active">Inicio</a></li>
+          <li><a href="#menu">Menú</a></li>
+          <li><a href="#specials">Especialidades</a></li>
+          <li><a href="#promos">Promociones</a></li>
+          <li><a href="#order-now">Contacto</a></li>
         </ul>
       </nav>
 
@@ -1952,7 +1990,7 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
 
         <!-- Order Now CTA -->
         <a href="#menu" class="btn-gold" id="headerOrderBtn">
-          <span>Order Now</span>
+          <span>Pedir Ahora</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
@@ -1963,33 +2001,33 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
   </header>
 
   <!-- ==========================================================================
-       2. HERO SECTION ("Food Made with Love ♡")
+       2. HERO SECTION ("Comida Hecha con Amor ♡")
        ========================================================================== -->
   <section class="hero-section" id="hero">
     <div class="container hero-grid">
       <!-- Left Content Column -->
       <div>
         <div class="hero-tag">
-          FRESH <span>•</span> TASTY <span>•</span> DELICIOUS
+          FRESCO <span>•</span> SABROSO <span>•</span> DELICIOSO
         </div>
         <h1 class="hero-title">
-          Food <br />
-          Made with <span class="script-love">Love<span class="doodle-heart">♡</span></span>
+          Comida <br />
+          Hecha con <span class="script-love">Amor<span class="doodle-heart">♡</span></span>
         </h1>
         <p class="hero-desc">
-          From cheesy pizzas to juicy burgers, we serve the best food made with fresh ingredients and a whole lot of love.
+          Desde pizzas con queso fundido hasta hamburguesas jugosas de autor, servimos lo mejor preparado con ingredientes frescos y mucho amor.
         </p>
 
         <div class="hero-cta-wrap">
           <a href="#menu" class="btn-gold" style="padding: 0.85rem 1.85rem; font-size: 1rem;">
-            <span>Order Now</span>
+            <span>Pedir Ahora</span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
           </a>
           <a href="/app" class="btn-outline" style="color: #FFFFFF; border-color: rgba(255,255,255,0.3); padding: 0.85rem 1.4rem;">
-            <span>📱 PWA App</span>
+            <span>📱 App Móvil</span>
           </a>
         </div>
 
@@ -2003,7 +2041,7 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
                 <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
               </svg>
             </div>
-            <div class="hero-feature-text">Fresh<br />Ingredients</div>
+            <div class="hero-feature-text">Ingredientes<br />Frescos</div>
           </div>
 
           <div class="hero-feature-item">
@@ -2016,7 +2054,7 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
                 <circle cx="18.5" cy="18.5" r="2.5"></circle>
               </svg>
             </div>
-            <div class="hero-feature-text">Fast<br />Delivery</div>
+            <div class="hero-feature-text">Entrega<br />Rápida</div>
           </div>
 
           <div class="hero-feature-item">
@@ -2027,7 +2065,7 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
                 <path d="m9 12 2 2 4-4"></path>
               </svg>
             </div>
-            <div class="hero-feature-text">Hygienic<br />& Safe</div>
+            <div class="hero-feature-text">Higiene<br />& Seguridad</div>
           </div>
         </div>
       </div>
@@ -2038,12 +2076,12 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
           <img 
             class="hero-main-img" 
             src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=1000&auto=format&fit=crop&q=85" 
-            alt="Signature Gourmet Burger with Golden Fries and Dip" 
+            alt="Hamburguesa Gourmet de Autor con Papas Doradas y Dip" 
           />
-          <!-- Doodle Annotation: "Best Burger in Town" -->
+          <!-- Doodle Annotation: "La Mejor Burger de la Ciudad" -->
           <div class="hero-doodle">
             <span class="sparks">\ | /</span>
-            <span>Best Burger<br />in Town</span>
+            <span>La Mejor Burger<br />de la Ciudad</span>
             <span class="arrow">⤷</span>
           </div>
         </div>
@@ -2052,17 +2090,17 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
   </section>
 
   <!-- ==========================================================================
-       3. CATEGORY CAROUSEL ("Something for Every Craving")
+       3. CATEGORY CAROUSEL ("Algo para Cada Antojo")
        ========================================================================== -->
   <section class="craving-section" id="menu">
     <div class="container">
       <div class="section-header-row">
         <div>
-          <div class="section-label">EXPLORE OUR MENU</div>
-          <h2 class="section-title">Something for Every Craving</h2>
+          <div class="section-label">EXPLORA NUESTRO MENÚ</div>
+          <h2 class="section-title">Algo para Cada Antojo</h2>
         </div>
         <a href="#specials" class="view-all-link">
-          <span>View Full Menu</span>
+          <span>Ver Menú Completo</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
@@ -2085,23 +2123,23 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
   </section>
 
   <!-- ==========================================================================
-       4. OUR SPECIALS / "Popular Menu"
+       4. OUR SPECIALS / "Menú Popular"
        ========================================================================== -->
   <section class="specials-section" id="specials">
     <div class="container">
       <div class="section-header-row">
         <div>
           <div class="specials-label-row">
-            <span class="specials-label">OUR SPECIALS</span>
+            <span class="specials-label">NUESTRAS ESPECIALIDADES</span>
             <span class="specials-dash"></span>
           </div>
-          <h2 class="section-title">Popular Menu</h2>
+          <h2 class="section-title">Menú Popular</h2>
           <p class="specials-subtitle">
-            Explore our most loved dishes, crafted for your taste and happiness.
+            Descubre nuestros platillos más aclamados, preparados para conquistar tu paladar.
           </p>
         </div>
         <a href="#author-burgers" class="btn-outline">
-          <span>View Full Menu</span>
+          <span>Ver Carta Completa</span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
@@ -2147,7 +2185,7 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
                     <circle cx="20" cy="21" r="1"></circle>
                     <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                   </svg>
-                  <span>Add to Cart</span>
+                  <span>Agregar al Carrito</span>
                 </button>
 
                 <button 
@@ -2226,7 +2264,7 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
                       <circle cx="20" cy="21" r="1"></circle>
                       <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                     </svg>
-                    <span>Add to Cart</span>
+                    <span>Agregar al Carrito</span>
                   </button>
 
                   <button 
@@ -2262,15 +2300,15 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
         <div class="promo-banner-dark">
           <div class="banner-text-col">
             <h3 class="banner-title-dark">
-              COMBO IT <br />
-              <span>BETTER</span>
+              COMBÍNALO <br />
+              <span>MEJOR</span>
             </h3>
             <p class="banner-desc-dark">
-              Burgers + Fries + Drink <br />
-              = A Happier You!
+              Hamburguesa + Papas + Bebida <br />
+              = ¡Máxima Felicidad!
             </p>
             <a href="#author-burgers" class="btn-gold btn-gold-sm">
-              <span>Explore Combos</span>
+              <span>Explorar Combos</span>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
@@ -2280,7 +2318,7 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
           <div class="banner-img-col">
             <img 
               src="https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=600&auto=format&fit=crop&q=80" 
-              alt="Combo Burger Bros with Coke and Fries" 
+              alt="Combo Hamburguesas Bros con Bebida y Papas" 
             />
           </div>
         </div>
@@ -2289,20 +2327,20 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
         <div class="promo-banner-light">
           <!-- Doodle Annotation -->
           <div class="doodle-sweet">
-            Happiness Comes<br />in Scoops ♡
+            La Felicidad Viene<br />en Porciones ♡
             <span class="arrow-curve">⤷</span>
           </div>
 
           <div class="banner-text-col">
             <h3 class="banner-title-light">
-              SWEET <br />
-              ENDINGS
+              FINALES <br />
+              DULCES
             </h3>
             <p class="banner-desc-light">
-              Because every great meal deserves a sweeter finish.
+              Porque cada gran comida merece el más dulce de los finales.
             </p>
             <a href="#specials" class="btn-outline">
-              <span>View Desserts</span>
+              <span>Ver Postres</span>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
@@ -2312,7 +2350,7 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
           <div class="banner-img-col">
             <img 
               src="https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=600&auto=format&fit=crop&q=80" 
-              alt="Sweet Desserts Chocolate Oreo Shake" 
+              alt="Postres Dulces Malteada de Chocolate Oreo" 
             />
           </div>
         </div>
@@ -2331,8 +2369,8 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
             🥣
           </div>
           <div class="pillar-text">
-            <h4>Freshly Made</h4>
-            <p>Prepared fresh, everytime.</p>
+            <h4>Recién Hecho</h4>
+            <p>Preparado al momento, siempre fresco.</p>
           </div>
         </div>
 
@@ -2341,8 +2379,8 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
             🌿
           </div>
           <div class="pillar-text">
-            <h4>Quality Ingredients</h4>
-            <p>Only the best, always.</p>
+            <h4>Ingredientes Selectos</h4>
+            <p>Solo la más alta calidad, siempre.</p>
           </div>
         </div>
 
@@ -2351,8 +2389,8 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
             👥
           </div>
           <div class="pillar-text">
-            <h4>Great Ambience</h4>
-            <p>A place to hangout & enjoy.</p>
+            <h4>Excelente Ambiente</h4>
+            <p>Un espacio para compartir y disfrutar.</p>
           </div>
         </div>
 
@@ -2361,8 +2399,8 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
             🧡
           </div>
           <div class="pillar-text">
-            <h4>Food for Everyone</h4>
-            <p>Veg, non-veg & more.</p>
+            <h4>Para Todos los Gustos</h4>
+            <p>Clásicos, gourmet, vegetarianos y más.</p>
           </div>
         </div>
       </div>
@@ -2377,17 +2415,17 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
       <div class="bottom-cta-banner">
         <div class="bottom-cta-overlay">
           <div>
-            <div class="bottom-cta-tag">GOOD FOOD ALWAYS</div>
+            <div class="bottom-cta-tag">BUENA COMIDA SIEMPRE</div>
             <h2 class="bottom-cta-headline">
-              <span class="script-crave">Crave It?</span>
-              We'll Deliver It!
+              <span class="script-crave">¿Un Antojo?</span>
+              ¡Te lo Llevamos!
             </h2>
             <p class="bottom-cta-desc">
-              Order your favorite food now and enjoy the perfect blend of taste and freshness right at your doorstep.
+              Pide tus platillos favoritos ahora y disfruta la combinación perfecta de sabor y frescura directo en tu puerta.
             </p>
             <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
               <a href="#menu" class="btn-gold" style="padding: 0.85rem 1.85rem; font-size: 1rem;">
-                <span>Order Now</span>
+                <span>Pedir Ahora</span>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12"></line>
                   <polyline points="12 5 19 12 12 19"></polyline>
@@ -2402,8 +2440,8 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
           <!-- Right side of bottom banner with doodles -->
           <div class="bottom-cta-visual">
             <div class="doodle-vibes">
-              Good Food ♡<br />
-              <span>Good Vibes!</span>
+              Buena Comida ♡<br />
+              <span>¡Buena Vibra!</span>
               <span class="vibe-sparks">✧ ✦</span>
             </div>
           </div>
@@ -2421,26 +2459,26 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
       <div class="footer-guarantees">
         <div class="guarantee-item">
           <span class="guarantee-icon">🌿</span>
-          <span>100% Fresh Ingredients</span>
+          <span>Ingredientes 100% Frescos</span>
         </div>
         <div class="guarantee-item">
           <span class="guarantee-icon">⭐</span>
-          <span>Top Rated by Customers</span>
+          <span>Mejor Calificado por Clientes</span>
         </div>
         <div class="guarantee-item">
           <span class="guarantee-icon">🚚</span>
-          <span>Fast & Reliable Delivery</span>
+          <span>Envío Rápido y Confiable</span>
         </div>
         <div class="guarantee-item">
           <span class="guarantee-icon">🛡️</span>
-          <span>Secure Online Payment</span>
+          <span>Pagos Seguros y Protegidos</span>
         </div>
       </div>
 
       <!-- Bottom Row with Copyright, Socials & Project Links -->
       <div class="footer-bottom-row">
         <div>
-          &copy; 2025 Tasty Bites & Hamburger Rapid. All rights reserved.
+          &copy; 2025 Tasty Bites & Hamburger Rapid. Todos los derechos reservados.
         </div>
 
         <div class="social-links">
@@ -2471,9 +2509,9 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
         <div class="ecosystem-links">
           <a href="/app">📱 PWA Móvil</a>
           <span>•</span>
-          <a href="/admin">⚙️ Admin Panel</a>
+          <a href="/admin">⚙️ Panel Admin</a>
           <span>•</span>
-          <a href="/api/health">API Status</a>
+          <a href="/api/health">Estado API</a>
         </div>
       </div>
     </div>
@@ -2506,7 +2544,7 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
         <span id="cartSubtotal">$0.00</span>
       </div>
       <div class="cart-summary-line">
-        <span>Delivery Express</span>
+        <span>Envío Express</span>
         <span style="color: #43A047; font-weight: 700;">¡GRATIS!</span>
       </div>
       <div class="cart-total-line">
@@ -2747,16 +2785,16 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
         checkoutBtn.disabled = false;
         checkoutBtn.style.opacity = '1';
         cartItemsList.innerHTML = cart.map(item => `
-          <div class="cart-item-row">
-            <img src="${item.img}" alt="${item.name}" class="cart-item-img" />
-            <div class="cart-item-details">
-              <div class="cart-item-title">${item.name}</div>
-              <div class="cart-item-price">$${(item.price * item.qty).toFixed(2)}</div>
+          <div class="cart-item-row" style="display: flex; gap: 0.85rem; align-items: center; background: #FAF8F5; padding: 0.75rem 0.85rem; border-radius: 14px; border: 1px solid #E8E3DC; box-shadow: 0 2px 6px rgba(0,0,0,0.02); margin-bottom: 0.75rem; box-sizing: border-box; width: 100%;">
+            <img src="${item.img}" alt="${item.name}" class="cart-item-img" style="width: 58px; height: 58px; min-width: 58px; max-width: 58px; border-radius: 10px; object-fit: cover; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: block;" />
+            <div class="cart-item-details" style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.2rem;">
+              <div class="cart-item-title" title="${item.name}" style="font-weight: 700; font-size: 0.92rem; color: #191614; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name}</div>
+              <div class="cart-item-price" style="font-weight: 800; color: #D97706; font-size: 0.9rem; font-variant-numeric: tabular-nums;">$${(item.price * item.qty).toFixed(2)}</div>
             </div>
-            <div class="cart-qty-ctrl">
-              <button class="qty-btn" onclick="changeQty('${item.id}', -1)">-</button>
-              <span style="font-size:0.88rem; font-weight:800; min-width:18px; text-align:center;">${item.qty}</span>
-              <button class="qty-btn" onclick="changeQty('${item.id}', 1)">+</button>
+            <div class="cart-qty-ctrl" style="display: flex; align-items: center; gap: 0.35rem; background: #FFFFFF; border: 1px solid #E8E3DC; border-radius: 9999px; padding: 0.2rem 0.45rem; flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+              <button class="qty-btn" onclick="changeQty('${item.id}', -1)" aria-label="Disminuir cantidad" style="background: #F3EFEA; border: none; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 800; cursor: pointer; color: #191614;">-</button>
+              <span style="font-size: 0.88rem; font-weight: 800; min-width: 18px; text-align: center; color: #191614; font-variant-numeric: tabular-nums;">${item.qty}</span>
+              <button class="qty-btn" onclick="changeQty('${item.id}', 1)" aria-label="Aumentar cantidad" style="background: #F3EFEA; border: none; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 800; cursor: pointer; color: #191614;">+</button>
             </div>
           </div>
         `).join('');
@@ -2868,7 +2906,7 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
       btn.addEventListener('click', () => {
         const name = btn.getAttribute('data-name');
         const price = btn.getAttribute('data-price');
-        const badge = btn.getAttribute('data-badge') || 'Gourmet Selection';
+        const badge = btn.getAttribute('data-badge') || 'Selección Gourmet';
         const desc = btn.getAttribute('data-desc');
         const img = btn.getAttribute('data-img');
         const prep = btn.getAttribute('data-prep') || '8-12 min';
