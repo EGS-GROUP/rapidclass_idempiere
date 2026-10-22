@@ -3068,6 +3068,15 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
       const successBanner = document.getElementById('gpsSuccessBanner');
 
       if (!modal) return;
+      if (gpsAnimId) {
+        cancelAnimationFrame(gpsAnimId);
+        gpsAnimId = null;
+      }
+      gpsProgress = 0;
+      gpsLastTime = null;
+      gpsIsPlaying = true;
+      gpsIsCompleted = false;
+
       modal.style.display = 'flex';
       overlay.style.display = 'flex';
       successBanner.style.display = 'none';
@@ -3087,7 +3096,7 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
       overlay.style.display = 'none';
 
       if (gpsMap) {
-        gpsMap.remove();
+        try { gpsMap.remove(); } catch (e) {}
         gpsMap = null;
       }
 
@@ -3096,6 +3105,10 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
         minZoom: 6,
         maxZoom: 19
       });
+
+      setTimeout(() => {
+        if (gpsMap) gpsMap.invalidateSize();
+      }, 250);
 
       const tileLayer = L.tileLayer(CARTO_URL, {
         attribution: '&copy; OpenStreetMap &copy; CARTO',
@@ -3167,8 +3180,11 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
     }
 
     function startGpsSimulation() {
-      if (gpsAnimId) cancelAnimationFrame(gpsAnimId);
-      gpsLastTime = performance.now();
+      if (gpsAnimId) {
+        cancelAnimationFrame(gpsAnimId);
+        gpsAnimId = null;
+      }
+      gpsLastTime = null;
 
       const remKmEl = document.getElementById('gpsRemainingKm');
       const etaEl = document.getElementById('gpsEta');
@@ -3178,42 +3194,54 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
       const statusBadge = document.getElementById('gpsStatusBadge');
       const successBanner = document.getElementById('gpsSuccessBanner');
 
+      if (!gpsRouteData || !gpsRouteData.points || gpsRouteData.points.length < 2) return;
       const points = gpsRouteData.points;
       const totalPts = points.length;
       const baseMs = 28000;
 
       function loop(time) {
         if (!gpsIsPlaying || gpsIsCompleted) return;
-        const delta = time - gpsLastTime;
+
+        if (gpsLastTime === null) {
+          gpsLastTime = time;
+        }
+        const delta = Math.max(0, time - gpsLastTime);
         gpsLastTime = time;
 
-        const stepMs = baseMs / gpsSimSpeed;
-        gpsProgress += (delta / stepMs) * 100;
+        const stepMs = Math.max(100, baseMs / (gpsSimSpeed || 1));
+        gpsProgress = Math.max(0, Math.min(100, gpsProgress + (delta / stepMs) * 100));
 
         if (gpsProgress >= 100) {
           gpsProgress = 100;
           gpsIsCompleted = true;
           gpsIsPlaying = false;
-          remKmEl.textContent = '0.00 km';
-          etaEl.textContent = '00:00';
-          progressTextEl.textContent = '100%';
-          progressBarEl.style.width = '100%';
-          progressBarEl.style.background = '#059669';
-          statusBadge.textContent = '✓ ENTREGADO';
-          statusBadge.style.background = '#059669';
-          successBanner.style.display = 'flex';
-          if (gpsVehicleMarker) gpsVehicleMarker.setLatLng(points[totalPts - 1]);
+          if (remKmEl) remKmEl.textContent = '0.00 km';
+          if (etaEl) etaEl.textContent = '00:00';
+          if (progressTextEl) progressTextEl.textContent = '100%';
+          if (progressBarEl) {
+            progressBarEl.style.width = '100%';
+            progressBarEl.style.background = '#059669';
+          }
+          if (statusBadge) {
+            statusBadge.textContent = '✓ ENTREGADO';
+            statusBadge.style.background = '#059669';
+          }
+          if (successBanner) successBanner.style.display = 'flex';
+          const finalPoint = points[totalPts - 1];
+          if (gpsVehicleMarker && finalPoint) gpsVehicleMarker.setLatLng(finalPoint);
           if (gpsTraveledLine) gpsTraveledLine.setLatLngs(points);
           return;
         }
 
-        const floatIdx = (gpsProgress / 100) * (totalPts - 1);
-        const low = Math.floor(floatIdx);
-        const high = Math.min(low + 1, totalPts - 1);
+        const floatIdx = Math.max(0, Math.min(totalPts - 1, (gpsProgress / 100) * (totalPts - 1)));
+        const low = Math.max(0, Math.min(totalPts - 1, Math.floor(floatIdx)));
+        const high = Math.max(0, Math.min(totalPts - 1, low + 1));
         const t = floatIdx - low;
 
-        const curLat = points[low][0] + (points[high][0] - points[low][0]) * t;
-        const curLng = points[low][1] + (points[high][1] - points[low][1]) * t;
+        const p1 = points[low] || points[0];
+        const p2 = points[high] || p1;
+        const curLat = p1[0] + (p2[0] - p1[0]) * t;
+        const curLng = p1[1] + (p2[1] - p1[1]) * t;
         const curPos = [curLat, curLng];
 
         if (gpsVehicleMarker) gpsVehicleMarker.setLatLng(curPos);
@@ -3223,14 +3251,16 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
           gpsTraveledLine.setLatLngs(cov);
         }
 
-        const veh = VEHICLE_DATA[gpsCurrentVehicle];
+        const veh = VEHICLE_DATA[gpsCurrentVehicle] || VEHICLE_DATA.moto;
         const remKm = Number((gpsRouteData.distanceKm * (1 - gpsProgress / 100)).toFixed(2));
-        remKmEl.textContent = `${remKm.toFixed(2)} km`;
-        etaEl.textContent = formatEtaMinutes(remKm, veh.speed);
-        speedEl.textContent = `${Math.round(veh.speed * gpsSimSpeed)} km/h`;
-        progressTextEl.textContent = `${Math.round(gpsProgress)}%`;
-        progressBarEl.style.width = `${gpsProgress}%`;
-        progressBarEl.style.background = '#0284c7';
+        if (remKmEl) remKmEl.textContent = `${remKm.toFixed(2)} km`;
+        if (etaEl) etaEl.textContent = formatEtaMinutes(remKm, veh.speed);
+        if (speedEl) speedEl.textContent = `${Math.round(veh.speed * (gpsSimSpeed || 1))} km/h`;
+        if (progressTextEl) progressTextEl.textContent = `${Math.round(gpsProgress)}%`;
+        if (progressBarEl) {
+          progressBarEl.style.width = `${gpsProgress}%`;
+          progressBarEl.style.background = '#0284c7';
+        }
 
         gpsAnimId = requestAnimationFrame(loop);
       }

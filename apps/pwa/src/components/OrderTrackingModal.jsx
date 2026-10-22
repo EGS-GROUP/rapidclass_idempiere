@@ -200,10 +200,13 @@ export default function OrderTrackingModal({ order, onClose }) {
     const stepDurationMs = baseDurationMs / simSpeed;
 
     const animateLoop = (time) => {
-      const delta = time - lastTimeRef.current;
+      if (!lastTimeRef.current) {
+        lastTimeRef.current = time;
+      }
+      const delta = Math.max(0, time - lastTimeRef.current);
       lastTimeRef.current = time;
 
-      localProgress += (delta / stepDurationMs) * 100;
+      localProgress = Math.max(0, Math.min(100, localProgress + (delta / stepDurationMs) * 100));
 
       if (localProgress >= 100) {
         localProgress = 100;
@@ -214,20 +217,20 @@ export default function OrderTrackingModal({ order, onClose }) {
         setIsPlaying(false);
 
         const finalPoint = points[points.length - 1];
-        if (vehicleMarkerRef.current) vehicleMarkerRef.current.setLatLng(finalPoint);
+        if (vehicleMarkerRef.current && finalPoint) vehicleMarkerRef.current.setLatLng(finalPoint);
         if (traveledPolylineRef.current) traveledPolylineRef.current.setLatLngs(points);
         return;
       }
 
       setProgress(localProgress);
 
-      const floatIndex = (localProgress / 100) * (totalPoints - 1);
-      const lowIndex = Math.floor(floatIndex);
-      const highIndex = Math.min(lowIndex + 1, totalPoints - 1);
+      const floatIndex = Math.max(0, Math.min(totalPoints - 1, (localProgress / 100) * (totalPoints - 1)));
+      const lowIndex = Math.max(0, Math.min(totalPoints - 1, Math.floor(floatIndex)));
+      const highIndex = Math.max(0, Math.min(totalPoints - 1, lowIndex + 1));
       const t = floatIndex - lowIndex;
 
-      const p1 = points[lowIndex];
-      const p2 = points[highIndex];
+      const p1 = points[lowIndex] || points[0];
+      const p2 = points[highIndex] || p1;
       const currentLat = p1[0] + (p2[0] - p1[0]) * t;
       const currentLng = p1[1] + (p2[1] - p1[1]) * t;
       const currentPos = [currentLat, currentLng];
