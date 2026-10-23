@@ -1,6 +1,6 @@
 ---
 // apps/ecommerce/src/pages/index.astro
-const title = "Tasty Bites | Fast Food Gourmet & Hamburguesas de Autor";
+const title = "BURGER FACTORY | Nextcollege 2027 • Fast Food Gourmet & Hamburguesas de Autor";
 
 // 1. Featured Popular Menu (Exact cards from the reference design)
 const popularDishes = [
@@ -390,10 +390,10 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
   <title>{title}</title>
   <meta name="description" content="Tasty Bites & Hamburger Rapid - Comida Hecha con Amor. Fast food gourmet, hamburguesas de autor, pizzas artesanales y delivery rápido." />
   
-  <!-- Google Fonts: Plus Jakarta Sans for modern typography + Caveat for handwritten script / doodles -->
+  <!-- Google Fonts: Bebas Neue (Display Titles), Caveat (Handwritten Doodles), Plus Jakarta Sans (UI) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   
   <!-- Leaflet CSS & JS for Real-time GPS Satellite Tracking -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
@@ -401,18 +401,35 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
   
   <style>
     :root {
-      /* Brand Color Palette Replicating the Attached Design */
+      /* Tipografías Burger Factory */
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-script: 'Caveat', cursive, sans-serif;
+      --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-main: var(--font-body);
+      --font-hand: var(--font-script);
+
+      /* Paleta Burger Factory Reference */
+      --bg-dark: #0D0D0D;
+      --bg-dark-card: #141414;
+      --bg-dark-elevated: #1B1B1B;
+      --border-dark: #242424;
+      --border-light: #E5E7EB;
+
       --primary: #F5A623;          /* Warm Golden Yellow / Amber */
       --primary-hover: #E09612;    /* Darker Amber */
       --primary-subtle: #FFF8EB;   /* Warm light tint */
       --primary-dark: #B87309;     /* Deep gold for badges */
+      --primary-gold: #F5A623;
+      --primary-gold-hover: #E09618;
+      --primary-gold-dark: #D97706;
+      --primary-gold-light: #FBECCB;
       
       --accent-red: #E53935;       /* "Popular" Badge Red */
       --accent-red-hover: #C62828;
       
-      --dark-bg: #141210;          /* Deep warm charcoal/black for Hero & Dark sections */
-      --dark-surface: #1E1A17;     /* Dark card/banner background */
-      --dark-border: rgba(255, 255, 255, 0.1);
+      --dark-bg: #0D0D0D;          /* Deep dark background */
+      --dark-surface: #141414;     /* Dark card/banner background */
+      --dark-border: #242424;
       
       --cream-bg: #FAF8F5;         /* Warm cream canvas for menu & light sections */
       --cream-surface: #FFFFFF;    /* Pure white product cards */
@@ -424,16 +441,13 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
       --text-light: #FFFFFF;       /* Headings on dark background */
       --text-light-muted: #C7C2BA; /* Secondary text on dark background */
       
-      --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-hand: 'Caveat', cursive, sans-serif;
-      
       --shadow-card: 0 10px 30px -5px rgba(25, 22, 20, 0.07), 0 4px 12px -2px rgba(25, 22, 20, 0.04);
       --shadow-hover: 0 20px 40px -8px rgba(245, 166, 35, 0.22), 0 8px 16px -2px rgba(25, 22, 20, 0.08);
       --shadow-gold: 0 8px 24px rgba(245, 166, 35, 0.35);
       
-      --radius-sm: 10px;
-      --radius-md: 18px;
-      --radius-lg: 26px;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
       --radius-pill: 9999px;
     }
 
@@ -474,117 +488,126 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
     }
 
     /* ==========================================================================
-       1. HEADER / NAVIGATION (Dark Glassmorphic over Hero)
+       1. TOP NAVBAR (Burger Factory Brand Style)
        ========================================================================== */
-    header {
+    header.factory-navbar {
       position: sticky;
       top: 0;
       z-index: 1000;
-      background: rgba(20, 18, 16, 0.88);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(13, 13, 13, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-dark);
+      padding: 14px 0;
       transition: all 0.3s ease;
     }
 
     .nav-inner {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      height: 80px;
+      justify-content: space-between;
+      gap: 20px;
     }
 
-    /* Brand Logo replicating "Tasty Bites" with chef hat icon */
     .brand-logo {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
+      gap: 12px;
       text-decoration: none;
-      color: var(--text-light);
     }
 
-    .brand-logo-icon {
-      width: 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--primary);
-      filter: drop-shadow(0 2px 8px rgba(245, 166, 35, 0.4));
-    }
-
-    .brand-logo-text {
+    .burger-logo-icon {
+      width: 42px;
+      height: 42px;
       display: flex;
       flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 3px;
+    }
+    .bun-top {
+      width: 34px;
+      height: 12px;
+      background: var(--primary-gold);
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+    }
+    .cheese-meat {
+      width: 32px;
+      height: 6px;
+      background: #FFFFFF;
+      border-radius: 3px;
+    }
+    .bun-bottom {
+      width: 34px;
+      height: 7px;
+      background: var(--primary-gold);
+      border-bottom-left-radius: 6px;
+      border-bottom-right-radius: 6px;
     }
 
-    .brand-logo-name {
-      font-family: var(--font-main);
-      font-weight: 800;
-      font-size: 1.45rem;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
+    .brand-text-block {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+    .brand-title-line {
+      font-family: var(--font-display);
+      font-size: 1.65rem;
+      letter-spacing: 0.05em;
       color: #FFFFFF;
     }
-
-    .brand-logo-name span {
-      color: var(--primary);
+    .brand-est {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--primary-gold);
+      font-weight: 700;
+      margin-top: 2px;
     }
 
-    .brand-logo-sub {
-      font-size: 0.62rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--text-light-muted);
-      font-weight: 600;
-    }
-
-    /* Nav Links */
     .nav-links {
       display: flex;
-      gap: 2rem;
       align-items: center;
+      gap: 24px;
       list-style: none;
     }
-
     .nav-links a {
-      color: #E6E1DA;
-      font-size: 0.95rem;
-      font-weight: 600;
+      color: #E5E7EB;
+      text-decoration: none;
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       transition: color 0.2s ease;
-      position: relative;
-      padding: 0.3rem 0;
     }
-
     .nav-links a:hover,
     .nav-links a.active {
-      color: #FFFFFF;
+      color: var(--primary-gold);
     }
-
-    .nav-links a.active::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 100%;
-      height: 2.5px;
-      background: var(--primary);
-      border-radius: 9999px;
+    .nav-pill-badge {
+      background: #222222;
+      border: 1px solid #333333;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      color: var(--primary-gold);
+      margin-left: 4px;
     }
 
     /* Nav Actions */
     .nav-actions {
       display: flex;
       align-items: center;
-      gap: 1.25rem;
+      gap: 12px;
     }
 
     .icon-btn {
-      background: transparent;
+      background: #181818;
+      border: 1px solid #282828;
       color: #FFFFFF;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -594,47 +617,53 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
     }
 
     .icon-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--primary);
+      background: #222222;
+      border-color: var(--primary-gold);
+      color: var(--primary-gold);
     }
 
     .cart-badge {
       position: absolute;
-      top: 2px;
-      right: 2px;
-      background: var(--primary);
-      color: #141210;
+      top: -4px;
+      right: -4px;
+      background: var(--primary-gold);
+      color: #0D0D0D;
       font-size: 0.72rem;
-      font-weight: 800;
-      width: 18px;
-      height: 18px;
+      font-weight: 900;
+      width: 19px;
+      height: 19px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
       transition: transform 0.2s ease;
     }
 
     /* Primary CTA Buttons */
     .btn-gold {
-      background: var(--primary);
-      color: #1A1305;
-      font-weight: 700;
-      font-size: 0.92rem;
-      padding: 0.65rem 1.45rem;
-      border-radius: var(--radius-pill);
+      background: var(--primary-gold);
+      color: #0D0D0D;
+      text-decoration: none;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 13px 26px;
+      border-radius: 8px;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: var(--shadow-gold);
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 16px rgba(245, 166, 35, 0.3);
+      cursor: pointer;
     }
 
     .btn-gold:hover {
-      background: var(--primary-hover);
+      background: var(--primary-gold-hover);
       transform: translateY(-2px);
-      box-shadow: 0 10px 28px rgba(245, 166, 35, 0.45);
+      box-shadow: var(--shadow-gold);
     }
 
     .btn-gold-sm {
@@ -644,185 +673,229 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
 
     .btn-outline {
       background: transparent;
-      color: var(--text-dark);
-      border: 1.5px solid var(--text-dark);
-      font-weight: 700;
+      color: #FFFFFF;
+      border: 1.5px solid #333333;
+      text-decoration: none;
+      font-family: var(--font-body);
       font-size: 0.88rem;
-      padding: 0.5rem 1.25rem;
-      border-radius: var(--radius-pill);
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 13px 24px;
+      border-radius: 8px;
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 8px;
       transition: all 0.2s ease;
+      cursor: pointer;
     }
 
     .btn-outline:hover {
-      background: var(--text-dark);
-      color: #FFFFFF;
-      transform: translateY(-1px);
+      border-color: var(--primary-gold);
+      color: var(--primary-gold);
+      background: rgba(245, 166, 35, 0.05);
     }
 
     /* ==========================================================================
-       2. HERO SECTION (Dark ambiance with prominent Burger & fries)
+       2. HERO SECTION (Burgers Done Right)
        ========================================================================== */
     .hero-section {
-      background: #141210 radial-gradient(circle at 75% 40%, rgba(245, 166, 35, 0.16) 0%, rgba(20, 18, 16, 0.95) 70%);
-      color: var(--text-light);
+      background: var(--bg-dark);
+      padding: 50px 0 60px;
       position: relative;
-      padding: 4.5rem 0 5.5rem;
       overflow: hidden;
     }
 
     .hero-grid {
       display: grid;
-      grid-template-columns: 1.05fr 1fr;
-      gap: 3rem;
+      grid-template-columns: 1.15fr 0.95fr;
       align-items: center;
+      gap: 40px;
     }
 
-    .hero-tag {
-      font-size: 0.78rem;
-      font-weight: 800;
-      letter-spacing: 0.25em;
-      color: #D6D0C5;
-      text-transform: uppercase;
-      margin-bottom: 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
+    .hero-content {
+      position: relative;
+      z-index: 2;
     }
 
-    .hero-tag span {
-      color: var(--primary);
+    .hero-script-tag {
+      font-family: var(--font-script);
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: var(--primary-gold);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .script-rays {
+      font-size: 1.4rem;
+      letter-spacing: 2px;
     }
 
     .hero-title {
-      font-size: 4.2rem;
-      font-weight: 900;
-      line-height: 1.05;
-      letter-spacing: -0.03em;
+      font-family: var(--font-display);
+      font-size: 6.2rem;
+      line-height: 0.92;
+      letter-spacing: 0.02em;
       color: #FFFFFF;
-      margin-bottom: 1.4rem;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .hero-title .highlight-gold {
+      color: var(--primary-gold);
     }
 
-    .hero-title .script-love {
-      font-family: var(--font-hand);
-      font-weight: 700;
-      color: var(--primary);
-      font-size: 5.6rem;
-      line-height: 0.8;
-      display: inline-block;
-      margin-left: 0.25rem;
-      position: relative;
-    }
-
-    .hero-title .script-love .doodle-heart {
-      display: inline-block;
-      font-size: 2.2rem;
-      transform: rotate(12deg) translateY(-8px);
-      margin-left: 0.3rem;
-      color: var(--primary);
-    }
-
-    .hero-desc {
-      font-size: 1.12rem;
-      color: var(--text-light-muted);
-      line-height: 1.65;
+    .hero-subtext {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
       max-width: 480px;
-      margin-bottom: 2.25rem;
+      margin-bottom: 30px;
     }
 
-    .hero-cta-wrap {
+    .hero-btn-group {
       display: flex;
       align-items: center;
-      gap: 1.25rem;
-      margin-bottom: 3.25rem;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 34px;
     }
 
-    /* 3 Hero Feature Badges */
-    .hero-features {
-      display: flex;
-      gap: 2.25rem;
-      align-items: center;
-      padding-top: 2rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    .hero-feature-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-    }
-
-    .hero-feature-icon {
-      color: var(--primary);
-      font-size: 1.4rem;
+    .hero-social-proof {
       display: flex;
       align-items: center;
+      gap: 12px;
     }
-
-    .hero-feature-text {
-      font-size: 0.82rem;
+    .stars-row {
+      color: var(--primary-gold);
+      font-size: 1.15rem;
+      letter-spacing: 2px;
+    }
+    .reviews-label {
+      font-size: 0.86rem;
       font-weight: 700;
-      color: #E2DDD5;
-      line-height: 1.2;
+      color: #E5E7EB;
     }
 
-    /* Hero Right Visual Column */
-    .hero-visual {
+    /* Hero Image Wrapper & Circular Stamp */
+    .hero-image-wrap {
       position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
-    .hero-image-container {
-      position: relative;
-      width: 100%;
-      max-width: 540px;
-      filter: drop-shadow(0 25px 45px rgba(0, 0, 0, 0.65));
-      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    .hero-doodle-top {
+      position: absolute;
+      top: -24px;
+      color: var(--primary-gold);
+      font-family: var(--font-script);
+      font-size: 2.2rem;
+      letter-spacing: 3px;
+      z-index: 5;
+      pointer-events: none;
     }
 
-    .hero-image-container:hover {
+    .hero-burger-img {
+      width: 100%;
+      max-width: 480px;
+      height: auto;
+      border-radius: 20px;
+      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.8));
+      transition: transform 0.4s ease;
+    }
+    .hero-burger-img:hover {
       transform: scale(1.02);
     }
 
-    .hero-main-img {
-      width: 100%;
-      height: auto;
-      object-fit: cover;
-      border-radius: 28px;
-      display: block;
-    }
-
-    /* Doodle Annotation: "Best Burger in Town" */
-    .hero-doodle {
+    /* 100% Fresh Beef Never Frozen Circular Badge */
+    .fresh-beef-stamp {
       position: absolute;
-      top: -24px;
-      right: 15px;
-      color: var(--primary);
-      font-family: var(--font-hand);
-      font-size: 1.85rem;
-      font-weight: 700;
-      line-height: 1.1;
+      bottom: -10px;
+      right: 10px;
+      width: 108px;
+      height: 108px;
+      border-radius: 50%;
+      background: #111111;
+      border: 2px dashed var(--primary-gold);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      pointer-events: none;
-      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6));
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
       transform: rotate(6deg);
     }
-
-    .hero-doodle .sparks {
-      font-size: 1.3rem;
-      letter-spacing: 0.15em;
-      display: block;
-      margin-bottom: -4px;
+    .stamp-pct {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      line-height: 1;
+      color: var(--primary-gold);
+    }
+    .stamp-title {
+      font-family: var(--font-display);
+      font-size: 0.82rem;
+      line-height: 1;
+      color: #FFFFFF;
+      letter-spacing: 0.05em;
+    }
+    .stamp-icon {
+      font-size: 0.8rem;
+      margin: 2px 0;
+    }
+    .stamp-sub {
+      font-size: 0.52rem;
+      font-weight: 800;
+      color: var(--primary-gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
     }
 
-    .hero-doodle .arrow {
-      font-size: 2rem;
-      display: block;
-      transform: rotate(50deg) translateX(-10px);
+    /* ==========================================================================
+       3. QUALITY PILLARS BAR (4 Columns)
+       ========================================================================== */
+    .pillars-bar {
+      background: #141414;
+      border-top: 1px solid var(--border-dark);
+      border-bottom: 1px solid var(--border-dark);
+      padding: 30px 0;
+    }
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .pillar-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .pillar-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: #1C1C1C;
+      border: 1px solid #2A2A2A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      color: var(--primary-gold);
+    }
+    .pillar-text h4 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      letter-spacing: 0.05em;
+      color: #FFFFFF;
+      line-height: 1.1;
+      margin-bottom: 2px;
+    }
+    .pillar-text p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.35;
     }
 
     /* ==========================================================================
@@ -1946,14 +2019,14 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
         grid-template-columns: 1fr;
         text-align: center;
       }
-      .hero-desc {
-        margin: 0 auto 2rem;
+      .hero-subtext {
+        margin: 0 auto 30px;
       }
-      .hero-cta-wrap {
+      .hero-btn-group, .hero-social-proof {
         justify-content: center;
       }
-      .hero-features {
-        justify-content: center;
+      .pillars-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
       .craving-grid {
         grid-template-columns: repeat(4, 1fr);
@@ -1986,10 +2059,10 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
 
     @media (max-width: 640px) {
       .hero-title {
-        font-size: 3rem;
+        font-size: 3.8rem;
       }
-      .hero-title .script-love {
-        font-size: 4rem;
+      .pillars-grid {
+        grid-template-columns: 1fr;
       }
       .craving-grid {
         grid-template-columns: repeat(3, 1fr);
@@ -2026,38 +2099,35 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
 <body>
 
   <!-- ==========================================================================
-       1. HEADER / NAVBAR
+       1. TOP NAVBAR (Burger Factory Brand Style)
        ========================================================================== -->
-  <header>
+  <header class="factory-navbar">
     <div class="container nav-inner">
-      <!-- Brand Logo -->
-      <a href="#hero" class="brand-logo">
-        <div class="brand-logo-icon">
-          <!-- Chef Hat SVG Icon -->
-          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/>
-            <line x1="6" y1="17" x2="18" y2="17"/>
-          </svg>
+      <!-- Brand Logo (Enlace a #hero) -->
+      <a href="#hero" class="brand-logo" aria-label="Burger Factory Inicio">
+        <div class="burger-logo-icon">
+          <div class="bun-top"></div>
+          <div class="cheese-meat"></div>
+          <div class="bun-bottom"></div>
         </div>
-        <div class="brand-logo-text">
-          <div class="brand-logo-name">Tasty <span>Bites</span></div>
-          <div class="brand-logo-sub">BUENA COMIDA • BUENA VIBRA</div>
+        <div class="brand-text-block">
+          <span class="brand-title-line">BURGER FACTORY</span>
+          <span class="brand-est">• EST. 2016 • Nextcollege 2027</span>
         </div>
       </a>
 
-      <!-- Navigation Links -->
+      <!-- Navigation Links: Menú, Nosotros, PWA APP (móvil), ADMIN (DASHBOARD) -->
       <nav>
         <ul class="nav-links">
-          <li><a href="#hero" class="active">Inicio</a></li>
           <li><a href="#menu">Menú</a></li>
-          <li><a href="#specials">Especialidades</a></li>
-          <li><a href="#promos">Promociones</a></li>
-          <li><a href="#order-now">Contacto</a></li>
+          <li><a href="#about">Nosotros</a></li>
+          <li><a href="/app">PWA APP <span class="nav-pill-badge">Móvil</span></a></li>
+          <li><a href="/admin">ADMIN <span class="nav-pill-badge">Dashboard</span></a></li>
         </ul>
       </nav>
 
-      <!-- Nav Actions: Search, Cart, Order Button -->
-      <div class="nav-actions">
+      <!-- Nav Actions: Buscar, Carrito, Rastrear Pedido GPS (NO "Pedir Ahora") -->
+      <div class="nav-actions" style="display: flex; align-items: center; gap: 14px;">
         <!-- Search Button -->
         <button class="icon-btn" id="searchTriggerBtn" title="Buscar platillos" aria-label="Buscar">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -2076,110 +2146,108 @@ const allProducts = [...popularDishes, ...burgers, ...extraCategoryDishes];
           <span class="cart-badge" id="cartBadgeCount">0</span>
         </button>
 
-        <!-- GPS Tracking Button (Rastrear Pedido) -->
+        <!-- GPS Tracking Button (Rastrear) -->
         <button class="nav-gps-btn" id="gpsNavTriggerBtn" title="Rastreo Satelital GPS en Tiempo Real" aria-label="Rastrear Pedido GPS">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
           </svg>
-          <span class="nav-gps-text">Rastrear Pedido</span>
+          <span class="nav-gps-text">Rastrear</span>
           <span class="nav-gps-live-dot" title="En Vivo"></span>
         </button>
-
-        <!-- Order Now CTA -->
-        <a href="#menu" class="btn-gold" id="headerOrderBtn">
-          <span>Pedir Ahora</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
-        </a>
       </div>
     </div>
   </header>
 
   <!-- ==========================================================================
-       2. HERO SECTION ("Comida Hecha con Amor ♡")
+       2. HERO SECTION ("Burgers Done Right")
        ========================================================================== -->
   <section class="hero-section" id="hero">
     <div class="container hero-grid">
       <!-- Left Content Column -->
-      <div>
-        <div class="hero-tag">
-          FRESCO <span>•</span> SABROSO <span>•</span> DELICIOSO
+      <div class="hero-content">
+        <div class="hero-script-tag">
+          <span>Hecho Fresco. Hecho con Pasión.</span>
+          <span class="script-rays">\|/</span>
         </div>
+
         <h1 class="hero-title">
-          Comida <br />
-          Hecha con <span class="script-love">Amor<span class="doodle-heart">♡</span></span>
+          BURGERS<br />
+          DONE <span class="highlight-gold">RIGHT</span>
         </h1>
-        <p class="hero-desc">
-          Desde pizzas con queso fundido hasta hamburguesas jugosas de autor, servimos lo mejor preparado con ingredientes frescos y mucho amor.
+
+        <p class="hero-subtext">
+          100% carne fresca seleccionada, sabores audaces, papas crujientes cortadas a mano y malteadas batidas al momento. Servidas a la perfección con la velocidad y calidad artesanal de Burger Factory.
         </p>
 
-        <div class="hero-cta-wrap">
-          <a href="#menu" class="btn-gold" style="padding: 0.85rem 1.85rem; font-size: 1rem;">
-            <span>Pedir Ahora</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
+        <div class="hero-btn-group">
+          <a href="#menu" class="btn-gold">
+            <span>Explorar Menú</span> <span>🍔</span>
           </a>
-          <a href="/app" class="btn-outline" style="color: #FFFFFF; border-color: rgba(255,255,255,0.3); padding: 0.85rem 1.4rem;">
-            <span>📱 App Móvil</span>
+          <a href="/app" class="btn-outline">
+            <span>📱 App Móvil PWA</span>
           </a>
         </div>
 
-        <!-- 3 Feature Badges -->
-        <div class="hero-features">
-          <div class="hero-feature-item">
-            <div class="hero-feature-icon">
-              <!-- Leaf Icon -->
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
-                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
-              </svg>
-            </div>
-            <div class="hero-feature-text">Ingredientes<br />Frescos</div>
-          </div>
-
-          <div class="hero-feature-item">
-            <div class="hero-feature-icon">
-              <!-- Fast Delivery Icon -->
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="1" y="3" width="15" height="13"></rect>
-                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-                <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                <circle cx="18.5" cy="18.5" r="2.5"></circle>
-              </svg>
-            </div>
-            <div class="hero-feature-text">Entrega<br />Rápida</div>
-          </div>
-
-          <div class="hero-feature-item">
-            <div class="hero-feature-icon">
-              <!-- Shield Check Icon -->
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                <path d="m9 12 2 2 4-4"></path>
-              </svg>
-            </div>
-            <div class="hero-feature-text">Higiene<br />& Seguridad</div>
-          </div>
+        <div class="hero-social-proof">
+          <div class="stars-row">★★★★★</div>
+          <div class="reviews-label">4.9 (2,800+ Reseñas Verificadas)</div>
         </div>
       </div>
 
-      <!-- Right Visual Column (Hero Burger on Wood Board with Fries and Dip) -->
-      <div class="hero-visual">
-        <div class="hero-image-container">
-          <img 
-            class="hero-main-img" 
-            src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=1000&auto=format&fit=crop&q=85" 
-            alt="Hamburguesa Gourmet de Autor con Papas Doradas y Dip" 
-          />
-          <!-- Doodle Annotation: "La Mejor Burger de la Ciudad" -->
-          <div class="hero-doodle">
-            <span class="sparks">\ | /</span>
-            <span>La Mejor Burger<br />de la Ciudad</span>
-            <span class="arrow">⤷</span>
+      <!-- Right Column: Hero Burger Photography & Fresh Stamp -->
+      <div class="hero-image-wrap">
+        <div class="hero-doodle-top">\|/</div>
+        <img
+          src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=900&auto=format&fit=crop&q=85"
+          alt="Burger Factory Signature Beef Burger"
+          class="hero-burger-img"
+        />
+        <!-- Circular Seal -->
+        <div class="fresh-beef-stamp" aria-label="100% Fresh Beef Never Frozen">
+          <div class="stamp-pct">100%</div>
+          <div class="stamp-title">CARNE FRESCA</div>
+          <div class="stamp-icon">🍔</div>
+          <div class="stamp-sub">NUNCA CONGELADA</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       3. QUALITY PILLARS BAR (4 Columnas - Sección Nosotros)
+       ========================================================================== -->
+  <section class="pillars-bar" id="about" aria-label="Pilares de Calidad">
+    <div class="container">
+      <div class="pillars-grid">
+        <div class="pillar-item">
+          <div class="pillar-icon-box">🍔</div>
+          <div class="pillar-text">
+            <h4>CALIDAD PREMIUM</h4>
+            <p>100% carne de res Angus y Wagyu fresca, nunca congelada.</p>
+          </div>
+        </div>
+
+        <div class="pillar-item">
+          <div class="pillar-icon-box">🍟</div>
+          <div class="pillar-text">
+            <h4>PAPAS RÚSTICAS</h4>
+            <p>Cortadas a mano diariamente, doradas y sazonadas a punto.</p>
+          </div>
+        </div>
+
+        <div class="pillar-item">
+          <div class="pillar-icon-box">🥤</div>
+          <div class="pillar-text">
+            <h4>SHAKES ARTESANALES</h4>
+            <p>Malteadas espesas y cremosas con helado recién batido.</p>
+          </div>
+        </div>
+
+        <div class="pillar-item">
+          <div class="pillar-icon-box">🌿</div>
+          <div class="pillar-text">
+            <h4>FRESCO CADA DÍA</h4>
+            <p>Ingredientes seleccionados recibidos a primera hora de la mañana.</p>
           </div>
         </div>
       </div>

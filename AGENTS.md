@@ -50,9 +50,11 @@ El repositorio está estructurado como un **monorepo desacoplado** de alto rendi
 ### Capa 1: Landing E-commerce (`apps/ecommerce`)
 - **Tecnología**: [Astro 4.16](https://astro.build/) (Static Site Generation con interactividad Vanilla JS).
 - **Ruta en producción**: `http://localhost:3000/` | **Dev server**: `http://localhost:4321/`
-- **Diseño visual**: Replicación fiel de la estética *Tasty Bites*:
-  - **Hero Section**: Fondo oscuro gourmet (`#141210`) con iluminación ámbar cálida, tipografía manuscrita `Food Made with Love ♡` (`Caveat`), doodles animados (`Best Burger in Town`), foto de hamburguesa gigante con papas y dip sobre tabla de madera, y tres insignias de valor (*Fresh Ingredients*, *Fast Delivery*, *Hygienic & Safe*).
-  - **Carrusel de Categorías ("Something for Every Craving")**: 7 selectores circulares con fotografía (*Burgers, Loaded Fries, Wraps, Sides, Beverages, Combos, Desserts*).
+- **Diseño visual**: Replicación fiel de la estética *Burger Factory* & *Tasty Bites*:
+  - **Top Navbar**: Logo oficial hamburguesa artesanal (`.bun-top`, `.cheese-meat`, `.bun-bottom`) con título **BURGER FACTORY** y subtítulo `• EST. 2016 • Nextcollege 2027` enlazado a `#hero`. Navegación unificada: **Menú** (`#menu`), **Nosotros** (`#about`), **PWA APP (Móvil)** (`/app`), **ADMIN (Dashboard)** (`/admin`), icono interactivo de carrito con contador reactivo y botón satelital en vivo **Rastrear** (`#gpsNavTriggerBtn`).
+  - **Hero Section**: Fondo oscuro Charcoal (`#0D0D0D`) con acentos Cheddar Amber (`#F5A623`), titular icónico **`BURGERS DONE RIGHT`** en `Bebas Neue`, tag manuscrito `Hecho Fresco. Hecho con Pasión. \|/` (`Caveat`), fotografía de hamburguesa insignia en alta definición, sello rotativo `100% CARNE FRESCA • NUNCA CONGELADA 🍔` y métricas sociales con estrellas de reseñas verificadas.
+  - **Barra de 4 Pilares de Calidad (`#about`)**: Sección de confianza con 4 columnas iconográficas: *Calidad Premium* (100% Angus & Wagyu), *Papas Rústicas* (cortadas a mano), *Shakes Artesanales* (batidas al momento) y *Fresco Cada Día* (ingredientes locales matutinos).
+  - **Carrusel de Categorías ("Algo para Cada Antojo")**: 7 selectores circulares con fotografía (*Burgers, Loaded Fries, Wraps, Sides, Beverages, Combos, Desserts*).
   - **Menú de Especialidades ("Popular Menu")**: Tarjetas réplica con insignias rojas/doradas:
     - *Margherita Pizza* ($12.99 / ₹ 249) con queso fundido estirado.
     - *Classic Burger* ($9.99 / ₹ 199).
@@ -60,7 +62,6 @@ El repositorio está estructurado como un **monorepo desacoplado** de alto rendi
     - *Chocolate Shake* ($5.99 / ₹ 149).
   - **Catálogo de 10 Hamburguesas de Autor**: Conservación integral de las 10 hamburguesas de la franquicia (*Rey de las Burgers, Burger Real Clásica, Doble Impacto, Trufa & Portobello, Crispy Smokehouse, etc.*) con filtros por categoría (*Especiales, Clásicas, Gourmet, Pollo, Plant-Based*).
   - **Banners Divididos (Side-by-Side)**: `COMBO IT BETTER` (Dark) y `SWEET ENDINGS` (Cream, doodle `Happiness Comes in Scoops ♡`).
-  - **Pilares de Confianza (4 Pilares)**: *Freshly Made, Quality Ingredients, Great Ambience, Food for Everyone*.
   - **Banner Inferior ("Crave It? We'll Deliver It!")**: Banner curvo con mesa servida, pizza, mojito de menta y doodle `Good Food ♡ Good Vibes! ✧ ✦`.
   - **Carrito Deslizante (Slide-In Cart Drawer)**: Panel lateral interactivo con cálculo de subtotal, delivery gratuito, control de cantidades (`+`/`-`), badge numérico reactivo y confirmación de compra.
   - **Modal de Detalle Nutricional**: Desglose de ingredientes, tiempo de preparación, calorías y maridaje de autor.
@@ -70,9 +71,15 @@ El repositorio está estructurado como un **monorepo desacoplado** de alto rendi
 - **Tecnología**: [React 18](https://react.dev/) + [Vite 5](https://vitejs.dev/).
 - **Ruta en producción**: `http://localhost:3000/app`
 - **Objetivo**: Aplicación móvil orientada a vendedores en terreno (preventa) y clientes finales:
-  - Navegación por 4 pestañas: **Menú**, **Ofertas**, **Órdenes**, **Perfil**.
-  - Simulador de carrito, personalizador de ingredientes y tracking de pedidos en tiempo real.
-  - Arquitectura preparada para operar en modo offline-first con sincronización posterior.
+  - **Soporte de Modo Dual (Claro & Oscuro)**: Selector en cabecera (`☀️ Claro` / `🌙 Oscuro`) con persistencia en `localStorage ('hamburger_theme')` y sincronización instantánea vía atributos `data-theme` y variables CSS fluidas.
+  - **Cabecera Oficial Burger Factory**: Logotipo estilizado de hamburguesa, título display `BURGER FACTORY` y subtítulo `Nextcollege 2027 • San Isidro, Lima`.
+  - **Tarjetas de Producto Enriquecidas**:
+    - Indicador gastronómico en vivo con **tiempo de preparación** y **número de calorías** (`⏱️ {prepTime} • 🔥 {calories}`).
+    - Botón **Personalizar** conservado intacto para apertura del modal de ingredientes y extras gourmet (+queso añejado, +bacon, +dip de trufa).
+    - Botón **+ Agregar** reactivo para integración al carrito.
+  - **Navegación por 4 pestañas**: **Menú**, **Ofertas**, **Órdenes**, **Perfil**.
+  - **Simulador de Carrito & Checkout**: Flujo transaccional con cupones promocionales y tracking en vivo.
+  - **Módulo GPS Satelital**: Integración nativa con `OrderTrackingModal` para simulación de entregas en Lima.
 
 ### Capa 3: Panel de Administración & Control ERP (`apps/admin`)
 - **Tecnología**: [React 18](https://react.dev/) + [Vite 5](https://vitejs.dev/).
