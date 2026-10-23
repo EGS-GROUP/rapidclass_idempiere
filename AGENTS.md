@@ -38,8 +38,8 @@ El repositorio está estructurado como un **monorepo desacoplado** de alto rendi
                                         │
                                         ▼
                         ┌───────────────────────────────┐
-                        │    MySQL 8 / In-Memory DB     │
-                        │     (Fallback Automático)     │
+                        │   SQLite DB (better-sqlite3)  │
+                        │   (Datamart Local & Sync ERP) │
                         └───────────────────────────────┘
 ```
 
@@ -317,4 +317,30 @@ Módulo transversal omnicanal integrado en las 3 capas para la demostración de 
 2. **PWA Mobile (`/app`)**: Botón `"🗺️ Ver Seguimiento GPS Satelital en Vivo"` en cada orden activa de la pestaña *Órdenes*.
 3. **Panel Admin (`/admin`)**: Botón `"🗺️ Ver GPS / Ruta"` en la bandeja central de pedidos omnicanal (`OrdersManagement.jsx`).
 4. **Backend API (`/api/orders`, `/api/orders/:id/track`)**: Endpoints REST con datos de origen, destino y vehículo asignado.
+
+---
+
+## 📦 8. Sincronización de Productos iDempiere ERP & SQLite Datamart
+
+Estrategia omnicanal de persistencia y catálogo híbrido desacoplado para alto rendimiento:
+
+### Principios de Arquitectura
+1. **SQLite como Datamart Local (`server/data/rapidfood.sqlite`)**:
+   - Gestionado con `better-sqlite3` con modo WAL (`PRAGMA journal_mode = WAL;`).
+   - Sirve lecturas ultra-rápidas (< 2ms) para la PWA móvil y E-commerce sin saturar el ERP.
+   - Zero-config y 100% portable para demostraciones y entornos POC.
+2. **Desacoplamiento Multimedia & Marketing**:
+   - **iDempiere (Fuente de la Verdad Contable)**: `M_Product_ID`, `Value` (SKU), `Name`, `PriceStd`, `PriceList`, `C_UOM_ID`, `IsActive`, `QtyOnHand`.
+   - **PWA/App (Fuente de la Verdad Visual & UX)**: `image_url` (WebP locales HD), `image_thumb`, `badge`, `badge_type`, `calories`, `prep_time`, `pairing`, `category_pwa`, `display_order`.
+   - Evita la descarga de BLOBs pesados desde `AD_Image` en iDempiere y garantiza carga instantánea a 60 FPS.
+3. **Mecánica de Sincronización Segura (*Smart UPSERT*)**:
+   - Al sincronizar vía `POST /api/sync/products` o mediante `productSyncService.js`:
+     - **Si el producto existe** (`idempiere_product_id` o `sku`): Solo actualiza precio, vigencia y nombre oficial ERP. **Preserva intactas** las fotos locales, insignias, calorías y atributos gastronómicos de la PWA.
+     - **Si es un producto nuevo**: Asigna automáticamente activos por defecto de acuerdo a su nombre/categoría (hamburguesa, pizza, papas, bebidas) con `sync_status = 'synced'`.
+   - Registro de auditoría en la tabla `sync_history`.
+
+### Endpoints REST de Catálogo & Sincronización
+- `GET /api/products`: Catálogo completo unificado compatible con PWA, Admin y E-commerce.
+- `POST /api/sync/products`: Dispara la sincronización contra iDempiere REST API v1 (`{ serverUrl, token }`).
+- `GET /api/sync/history`: Historial de ejecuciones de sincronización con métricas de altas y actualizaciones.
 

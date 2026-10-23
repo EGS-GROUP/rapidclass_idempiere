@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
+const { syncProductsFromIdempiere, getSyncHistory } = require('../services/productSyncService');
 
 // Health Check Endpoint
 router.get('/health', (req, res) => {
@@ -89,6 +90,36 @@ router.post('/reset', async (req, res) => {
   try {
     await db.resetProducts();
     res.json({ success: true, message: 'Catálogo de Hamburger Rapid restablecido con éxito.' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Trigger ERP product catalog synchronization
+router.post('/sync/products', async (req, res) => {
+  try {
+    const { serverUrl, token, proxyUrl, mockProducts } = req.body;
+    const result = await syncProductsFromIdempiere({ serverUrl, token, proxyUrl, mockProducts });
+    res.json({
+      success: true,
+      message: 'Sincronización con iDempiere completada exitosamente',
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// View ERP sync history
+router.get('/sync/history', (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const history = getSyncHistory(limit);
+    res.json({
+      success: true,
+      count: history.length,
+      data: history
+    });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
