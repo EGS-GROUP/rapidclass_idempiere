@@ -1,7 +1,7 @@
 # ========================================================
 # ETAPA 1: Compilación del Portal E-commerce (Astro)
 # ========================================================
-FROM node:20-alpine AS builder-ecommerce
+FROM node:22-alpine AS builder-ecommerce
 WORKDIR /app/ecommerce
 
 COPY apps/ecommerce/package*.json ./
@@ -13,7 +13,7 @@ RUN npm run build
 # ========================================================
 # ETAPA 2: Compilación de la PWA Mobile (React + Vite PWA)
 # ========================================================
-FROM node:20-alpine AS builder-pwa
+FROM node:22-alpine AS builder-pwa
 WORKDIR /app/pwa
 
 COPY apps/pwa/package*.json ./
@@ -25,7 +25,7 @@ RUN npm run build
 # ========================================================
 # ETAPA 3: Compilación del Panel Administrativo (React + Vite)
 # ========================================================
-FROM node:20-alpine AS builder-admin
+FROM node:22-alpine AS builder-admin
 WORKDIR /app/admin
 
 COPY apps/admin/package*.json ./
@@ -37,11 +37,14 @@ RUN npm run build
 # ========================================================
 # ETAPA 4: Runtime Final (Node.js API + Servidor Unificado)
 # ========================================================
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=3000
+
+# Instalar dependencias del sistema requeridas para módulos nativos C++ (better-sqlite3 en ARM64/x86_64)
+RUN apk add --no-cache python3 make g++
 
 # 1. Instalar dependencias del servidor backend
 COPY server/package*.json ./server/
