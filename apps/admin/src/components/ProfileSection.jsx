@@ -7,9 +7,33 @@ export default function ProfileSection({ session }) {
   const [testingConnection, setTestingConnection] = useState(false);
   const [connectionResult, setConnectionResult] = useState(null);
 
+  // ERP Catalog Seeding & Sync state
+  const [isSeeding, setIsSeeding] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [seedResult, setSeedResult] = useState(null);
+  const [syncResult, setSyncResult] = useState(null);
+  const [syncHistory, setSyncHistory] = useState([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+
+  const fetchSyncHistory = async () => {
+    setLoadingHistory(true);
+    try {
+      const res = await fetch('/api/sync/history?limit=5');
+      if (res.ok) {
+        const data = await res.json();
+        setSyncHistory(data.data || []);
+      }
+    } catch {
+      // ignore
+    } finally {
+      setLoadingHistory(false);
+    }
+  };
+
   useEffect(() => {
     const loaded = authService.getErpConfig();
     setConfig(loaded);
+    fetchSyncHistory();
   }, []);
 
   const handleChange = (field, value) => {
@@ -87,6 +111,88 @@ export default function ProfileSection({ session }) {
       });
     } finally {
       setTestingConnection(false);
+    }
+  };
+
+  const handleSeedCatalog = async () => {
+    if (!session?.token) {
+      alert('Debes tener una sesión activa con Token Bearer para sembrar en iDempiere.');
+      return;
+    }
+    if (!confirm('¿Deseas aprovisionar las 5 categorías y 10 hamburguesas en iDempiere ERP (GardenWorld) y sincronizarlas hacia SQLite?')) {
+      return;
+    }
+
+    setIsSeeding(true);
+    setSeedResult(null);
+
+    try {
+      const res = await fetch('/api/erp/bootstrap', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          serverUrl: config.serverUrl,
+          token: session.token,
+          clientId: config.defaultClientId || 11,
+          orgId: config.defaultOrgId || 11,
+          priceListVersionId: 101,
+          useCorsProxy: config.useCorsProxy,
+          corsProxyUrl: config.corsProxyUrl
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Error durante el aprovisionamiento en iDempiere');
+      }
+
+      setSeedResult(data);
+      fetchSyncHistory();
+    } catch (err) {
+      setSeedResult({
+        success: false,
+        error: err.message,
+        logs: [`❌ Error: ${err.message}`]
+      });
+    } finally {
+      setIsSeeding(false);
+    }
+  };
+
+  const handleSyncCatalog = async () => {
+    if (!session?.token) {
+      alert('Debes tener una sesión activa con Token Bearer para sincronizar desde iDempiere.');
+      return;
+    }
+
+    setIsSyncing(true);
+    setSyncResult(null);
+
+    try {
+      const res = await fetch('/api/sync/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          serverUrl: config.serverUrl,
+          token: session.token,
+          proxyUrl: config.useCorsProxy ? config.corsProxyUrl : null
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Error durante la sincronización');
+      }
+
+      setSyncResult(data);
+      fetchSyncHistory();
+    } catch (err) {
+      setSyncResult({
+        success: false,
+        error: err.message
+      });
+    } finally {
+      setIsSyncing(false);
     }
   };
 
@@ -501,6 +607,243 @@ export default function ProfileSection({ session }) {
               </select>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Card 4: Aprovisionamiento y Sincronización de Catálogo iDempiere ERP */}
+      <div style={{
+        background: '#FFFFFF',
+        borderRadius: '18px',
+        border: '1px solid #E2E8F0',
+        padding: '24px',
+        boxShadow: '0 2px 10px rgba(15,23,42,0.03)'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', marginBottom: '14px' }}>
+          <div>
+            <h3 style={{ margin: '0 0 6px 0', fontSize: '1.15rem', fontWeight: '800', color: '#0F172A', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span>📦</span> Aprovisionamiento & Sincronización de Catálogo iDempiere
+            </h3>
+            <p style={{ margin: 0, fontSize: '0.84rem', color: '#64748B', maxWidth: '780px', lineHeight: '1.45' }}>
+              Inyecta las <b>5 categorías gastronómicas oficiales</b> y las <b>10 hamburguesas de autor</b> en el ERP (GardenWorld), asigna sus precios en <code>M_ProductPrice</code> y sincroniza sus IDs oficiales (<code>M_Product_ID</code>) hacia el Datamart SQLite de la PWA.
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{
+              background: session?.token ? '#ECFDF5' : '#FEF2F2',
+              color: session?.token ? '#065F46' : '#991B1B',
+              border: `1px solid ${session?.token ? '#A7F3D0' : '#FECACA'}`,
+              padding: '5px 12px',
+              borderRadius: '20px',
+              fontSize: '0.78rem',
+              fontWeight: '700',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}>
+              <span>{session?.token ? '● Token Bearer Activo' : '○ Sesión Sin Token'}</span>
+            </span>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div style={{
+          display: 'flex',
+          gap: '12px',
+          flexWrap: 'wrap',
+          background: '#F8FAFC',
+          padding: '16px',
+          borderRadius: '12px',
+          border: '1px solid #E2E8F0',
+          marginBottom: '20px'
+        }}>
+          <button
+            type="button"
+            onClick={handleSeedCatalog}
+            disabled={isSeeding || isSyncing || !session?.token}
+            style={{
+              background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+              color: '#FFFFFF',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '10px',
+              fontSize: '0.88rem',
+              fontWeight: '800',
+              cursor: isSeeding ? 'not-allowed' : 'pointer',
+              opacity: (isSeeding || !session?.token) ? 0.6 : 1,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              boxShadow: '0 4px 12px rgba(16, 185, 129, 0.25)'
+            }}
+          >
+            <span>{isSeeding ? '⏳ Sembrando en ERP...' : '🌱 Sembrar Catálogo en iDempiere (POST)'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleSyncCatalog}
+            disabled={isSeeding || isSyncing || !session?.token}
+            style={{
+              background: 'linear-gradient(135deg, #0284C7 0%, #0369A1 100%)',
+              color: '#FFFFFF',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '10px',
+              fontSize: '0.88rem',
+              fontWeight: '800',
+              cursor: isSyncing ? 'not-allowed' : 'pointer',
+              opacity: (isSyncing || !session?.token) ? 0.6 : 1,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              boxShadow: '0 4px 12px rgba(2, 132, 199, 0.25)'
+            }}
+          >
+            <span>{isSyncing ? '⏳ Sincronizando...' : '🔄 Sincronizar Catálogo hacia SQLite'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={fetchSyncHistory}
+            disabled={loadingHistory}
+            style={{
+              background: '#FFFFFF',
+              color: '#475569',
+              border: '1px solid #CBD5E1',
+              padding: '10px 16px',
+              borderRadius: '10px',
+              fontSize: '0.85rem',
+              fontWeight: '700',
+              cursor: 'pointer'
+            }}
+          >
+            <span>{loadingHistory ? '⏳...' : '📋 Actualizar Historial'}</span>
+          </button>
+        </div>
+
+        {/* Results Banner if Seeding Done */}
+        {seedResult && (
+          <div style={{
+            background: seedResult.success ? '#F0FDF4' : '#FEF2F2',
+            border: `1px solid ${seedResult.success ? '#86EFAC' : '#FCA5A5'}`,
+            borderRadius: '12px',
+            padding: '16px',
+            marginBottom: '16px'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+              <div style={{ fontWeight: '800', color: seedResult.success ? '#166534' : '#991B1B', fontSize: '0.92rem' }}>
+                {seedResult.success ? '✅ Aprovisionamiento Completado en iDempiere' : '❌ Fallo en Aprovisionamiento'}
+              </div>
+              <span style={{ fontSize: '0.75rem', color: '#64748B' }}>{seedResult.timestamp}</span>
+            </div>
+
+            {seedResult.success && (
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '12px' }}>
+                <span style={{ background: '#DCFCE7', color: '#166534', padding: '4px 10px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: '700' }}>
+                  Categorías: +{seedResult.categoriesCreated} creadas / {seedResult.categoriesExisting} existentes
+                </span>
+                <span style={{ background: '#E0F2FE', color: '#0369A1', padding: '4px 10px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: '700' }}>
+                  Hamburguesas: +{seedResult.productsCreated} creadas / {seedResult.productsExisting} verificadas
+                </span>
+                <span style={{ background: '#FEF3C7', color: '#92400E', padding: '4px 10px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: '700' }}>
+                  Precios Fijados: {seedResult.pricesSet}
+                </span>
+              </div>
+            )}
+
+            {/* Execution Logs Terminal */}
+            {seedResult.logs && seedResult.logs.length > 0 && (
+              <div style={{
+                background: '#0F172A',
+                color: '#38BDF8',
+                fontFamily: 'monospace',
+                fontSize: '0.78rem',
+                borderRadius: '8px',
+                padding: '12px 14px',
+                maxHeight: '160px',
+                overflowY: 'auto',
+                lineHeight: '1.6'
+              }}>
+                {seedResult.logs.map((log, idx) => (
+                  <div key={idx}>{log}</div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Results Banner if Sync Done */}
+        {syncResult && (
+          <div style={{
+            background: syncResult.success ? '#F0F9FF' : '#FEF2F2',
+            border: `1px solid ${syncResult.success ? '#BAE6FD' : '#FCA5A5'}`,
+            borderRadius: '12px',
+            padding: '14px',
+            marginBottom: '16px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: '700', color: syncResult.success ? '#0369A1' : '#991B1B' }}>
+              {syncResult.success ? `✅ Sincronización exitosa: ${syncResult.data?.itemsTotal || 0} artículos procesados en SQLite` : `❌ ${syncResult.error}`}
+            </span>
+            <span style={{ fontSize: '0.75rem', color: '#64748B' }}>
+              {syncResult.data?.timestamp || new Date().toLocaleTimeString()}
+            </span>
+          </div>
+        )}
+
+        {/* Sync History Logs Table */}
+        <div>
+          <h4 style={{ margin: '0 0 10px 0', fontSize: '0.85rem', fontWeight: '800', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            Últimas Sincronizaciones Registradas en SQLite
+          </h4>
+          {syncHistory.length === 0 ? (
+            <div style={{ fontSize: '0.82rem', color: '#94A3B8', fontStyle: 'italic', padding: '8px 0' }}>
+              No hay registros previos de sincronización. Ejecuta la siembra o sincronización para registrar auditoría.
+            </div>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
+                <thead>
+                  <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', textAlign: 'left', color: '#64748B' }}>
+                    <th style={{ padding: '8px 10px' }}>ID</th>
+                    <th style={{ padding: '8px 10px' }}>Tipo</th>
+                    <th style={{ padding: '8px 10px' }}>Total</th>
+                    <th style={{ padding: '8px 10px' }}>Nuevos</th>
+                    <th style={{ padding: '8px 10px' }}>Actualizados</th>
+                    <th style={{ padding: '8px 10px' }}>Estado</th>
+                    <th style={{ padding: '8px 10px' }}>Fecha</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {syncHistory.map((item) => (
+                    <tr key={item.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
+                      <td style={{ padding: '8px 10px', fontWeight: '700' }}>#{item.id}</td>
+                      <td style={{ padding: '8px 10px' }}><code>{item.sync_type}</code></td>
+                      <td style={{ padding: '8px 10px' }}>{item.items_total}</td>
+                      <td style={{ padding: '8px 10px', color: '#10B981', fontWeight: '700' }}>+{item.items_created}</td>
+                      <td style={{ padding: '8px 10px', color: '#0284C7', fontWeight: '700' }}>{item.items_updated}</td>
+                      <td style={{ padding: '8px 10px' }}>
+                        <span style={{
+                          background: item.status === 'SUCCESS' ? '#DCFCE7' : '#FEE2E2',
+                          color: item.status === 'SUCCESS' ? '#166534' : '#991B1B',
+                          padding: '2px 6px',
+                          borderRadius: '4px',
+                          fontSize: '0.72rem',
+                          fontWeight: '700'
+                        }}>
+                          {item.status}
+                        </span>
+                      </td>
+                      <td style={{ padding: '8px 10px', color: '#64748B' }}>{item.executed_at}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
 

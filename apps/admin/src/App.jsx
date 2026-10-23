@@ -509,7 +509,7 @@ function AdminDashboard({ session, logout }) {
               borderRadius: '50%',
               background: dbStatus?.connected ? '#10B981' : '#F59E0B'
             }} />
-            <span>DB: {dbStatus?.mode === 'mysql' ? 'MySQL Conectado' : 'Modo In-Memory'}</span>
+            <span>DB: {dbStatus?.mode === 'sqlite' ? 'SQLite Datamart' : (dbStatus?.mode === 'mysql' ? 'MySQL Conectado' : 'Modo In-Memory')}</span>
           </div>
 
           <a
@@ -625,10 +625,10 @@ function AdminDashboard({ session, logout }) {
               <span style={{ color: dbStatus.connected ? '#10B981' : '#F59E0B' }}>● En Línea</span>
             </div>
             <div style={{ fontSize: '1.4rem', fontWeight: '800', color: dbStatus.connected ? '#065F46' : '#D97706', lineHeight: 1.3 }}>
-              {dbStatus.mode === 'mysql' ? 'MySQL Activo' : 'In-Memory DB'}
+              {dbStatus.mode === 'sqlite' ? 'SQLite Datamart Activo' : (dbStatus.mode === 'mysql' ? 'MySQL Activo' : 'In-Memory DB')}
             </div>
             <div style={{ fontSize: '0.78rem', color: '#64748B', marginTop: '6px' }}>
-              Host: {dbStatus.host || '127.0.0.1'} &bull; DB: {dbStatus.database || 'demo'}
+              Archivo: {dbStatus.databaseFile || 'rapidfood.sqlite'} &bull; Tablas: {dbStatus.table || 'products'} ({dbStatus.records || 0} registros)
             </div>
           </div>
         </div>
@@ -741,6 +741,26 @@ function AdminDashboard({ session, logout }) {
                   }}
                 >
                   🔄 Resetear a 10 Iniciales
+                </button>
+                <button
+                  onClick={() => setActiveSection('profile')}
+                  style={{
+                    background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                    color: 'white',
+                    border: 'none',
+                    padding: '8px 14px',
+                    borderRadius: '10px',
+                    fontWeight: '700',
+                    fontSize: '0.82rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    boxShadow: '0 2px 6px rgba(16, 185, 129, 0.25)'
+                  }}
+                  title="Aprovisionar y sincronizar con iDempiere ERP"
+                >
+                  <span>🌱 Sembrar / Sincronizar ERP</span>
                 </button>
                 <button
                   onClick={() => setIsCreateModalOpen(true)}

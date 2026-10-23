@@ -339,8 +339,9 @@ Estrategia omnicanal de persistencia y catálogo híbrido desacoplado para alto 
      - **Si es un producto nuevo**: Asigna automáticamente activos por defecto de acuerdo a su nombre/categoría (hamburguesa, pizza, papas, bebidas) con `sync_status = 'synced'`.
    - Registro de auditoría en la tabla `sync_history`.
 
-### Endpoints REST de Catálogo & Sincronización
+### Endpoints REST de Catálogo, Siembra & Sincronización
 - `GET /api/products`: Catálogo completo unificado compatible con PWA, Admin y E-commerce.
+- `POST /api/erp/bootstrap`: Aprovisionamiento automático (*Seed*) de las 5 categorías oficiales (`CAT-ESP`, `CAT-CLA`, `CAT-GOU`, `CAT-POL`, `CAT-VEG`) y las 10 hamburguesas de autor en iDempiere ERP (`M_Product`, `M_ProductPrice`), enlazando los `M_Product_ID` reales con SQLite.
 - `POST /api/sync/products`: Dispara la sincronización contra iDempiere REST API v1 (`{ serverUrl, token }`).
 - `GET /api/sync/history`: Historial de ejecuciones de sincronización con métricas de altas y actualizaciones.
 

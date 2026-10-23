@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const { syncProductsFromIdempiere, getSyncHistory } = require('../services/productSyncService');
+const { seedIdempiereCatalog } = require('../services/idempiereSeedService');
 
 // Health Check Endpoint
 router.get('/health', (req, res) => {
@@ -120,6 +121,28 @@ router.get('/sync/history', (req, res) => {
       count: history.length,
       data: history
     });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Seed / Bootstrap iDempiere ERP with Rapid Food Categories and Products
+router.post('/erp/bootstrap', async (req, res) => {
+  try {
+    const { serverUrl, token, clientId, orgId, priceListVersionId, useCorsProxy, corsProxyUrl } = req.body;
+    if (!token) {
+      return res.status(400).json({ success: false, error: 'Token de sesión iDempiere requerido para aprovisionar catálogo.' });
+    }
+    const result = await seedIdempiereCatalog({
+      serverUrl,
+      token,
+      clientId,
+      orgId,
+      priceListVersionId,
+      useCorsProxy,
+      corsProxyUrl
+    });
+    res.json(result);
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
