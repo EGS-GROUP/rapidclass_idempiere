@@ -162,10 +162,13 @@ async function seedIdempiereCatalog(options = {}) {
     results.logs.push(`⚠️ No se pudo listar categorías previas: ${err.message}. Procediendo con inserción controlada.`);
   }
 
+  const updateCatStmt = db.prepare("UPDATE categories_mapping SET idempiere_category_id = ? WHERE code = ?");
+
   for (const cat of SEED_CATEGORIES) {
     const found = existingCategories.find(c => (c.Value || c.value) === cat.value);
+    let catId = null;
     if (found) {
-      const catId = found.id || found.M_Product_Category_ID;
+      catId = found.id || found.M_Product_Category_ID;
       results.categoriesMap[cat.value] = catId;
       results.categoriesExisting++;
       results.logs.push(`ℹ️ Categoría existente en ERP: [${cat.value}] ${cat.name} (ID: ${catId})`);
@@ -189,7 +192,7 @@ async function seedIdempiereCatalog(options = {}) {
 
         if (postRes.ok) {
           const created = await postRes.json();
-          const catId = created.id || created.M_Product_Category_ID;
+          catId = created.id || created.M_Product_Category_ID;
           results.categoriesMap[cat.value] = catId;
           results.categoriesCreated++;
           results.logs.push(`✅ Categoría CREADA en iDempiere: [${cat.value}] ${cat.name} (ID: ${catId})`);
@@ -197,11 +200,21 @@ async function seedIdempiereCatalog(options = {}) {
           const errText = await postRes.text();
           results.logs.push(`⚠️ No se pudo crear categoría ${cat.value}: HTTP ${postRes.status} - ${errText.slice(0, 80)}`);
           // Fallback a ID simulado si falla en test
-          results.categoriesMap[cat.value] = 1000100 + results.categoriesCreated;
+          catId = 1000100 + results.categoriesCreated;
+          results.categoriesMap[cat.value] = catId;
         }
       } catch (catErr) {
         results.logs.push(`❌ Error al conectar para categoría ${cat.value}: ${catErr.message}`);
-        results.categoriesMap[cat.value] = 1000100 + results.categoriesCreated;
+        catId = 1000100 + results.categoriesCreated;
+        results.categoriesMap[cat.value] = catId;
+      }
+    }
+
+    if (catId) {
+      try {
+        updateCatStmt.run(catId, cat.code);
+      } catch {
+        // ignore
       }
     }
   }
@@ -223,7 +236,7 @@ async function seedIdempiereCatalog(options = {}) {
     results.logs.push(`⚠️ No se pudo listar productos previos: ${err.message}`);
   }
 
-  const updateProdStmt = db.prepare('UPDATE products SET idempiere_product_id = ?, sync_status = "synced", last_synced_at = CURRENT_TIMESTAMP WHERE sku = ?');
+  const updateProdStmt = db.prepare("UPDATE products SET idempiere_product_id = ?, sync_status = 'synced', last_synced_at = CURRENT_TIMESTAMP WHERE sku = ?");
 
   for (const p of SEED_PRODUCTS) {
     const found = existingProducts.find(item => (item.Value || item.value) === p.sku);
