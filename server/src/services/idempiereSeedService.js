@@ -152,7 +152,7 @@ async function seedIdempiereCatalog(options = {}) {
   // Intentar consultar categorías existentes
   let existingCategories = [];
   try {
-    const checkCatUrl = buildUrl(serverUrl, `api/v1/models/m_product_category?$filter=AD_Client_ID eq ${clientId}&$select=id,Value,Name`, useCorsProxy, corsProxyUrl);
+    const checkCatUrl = buildUrl(serverUrl, `api/v1/models/m_product_category?$filter=AD_Client_ID eq ${clientId}&$select=M_Product_Category_ID,Value,Name`, useCorsProxy, corsProxyUrl);
     const catRes = await fetch(checkCatUrl, { headers });
     if (catRes.ok) {
       const catBody = await catRes.json();
@@ -168,7 +168,7 @@ async function seedIdempiereCatalog(options = {}) {
     const found = existingCategories.find(c => (c.Value || c.value) === cat.value);
     let catId = null;
     if (found) {
-      catId = found.id || found.M_Product_Category_ID;
+      catId = found.id || found.M_Product_Category_ID?.id || found.M_Product_Category_ID;
       results.categoriesMap[cat.value] = catId;
       results.categoriesExisting++;
       results.logs.push(`ℹ️ Categoría existente en ERP: [${cat.value}] ${cat.name} (ID: ${catId})`);
@@ -226,7 +226,7 @@ async function seedIdempiereCatalog(options = {}) {
 
   let existingProducts = [];
   try {
-    const checkProdUrl = buildUrl(serverUrl, `api/v1/models/m_product?$filter=AD_Client_ID eq ${clientId}&$select=id,Value,Name`, useCorsProxy, corsProxyUrl);
+    const checkProdUrl = buildUrl(serverUrl, `api/v1/models/m_product?$filter=AD_Client_ID eq ${clientId}&$select=M_Product_ID,Value,Name`, useCorsProxy, corsProxyUrl);
     const prodRes = await fetch(checkProdUrl, { headers });
     if (prodRes.ok) {
       const prodBody = await prodRes.json();
@@ -243,7 +243,7 @@ async function seedIdempiereCatalog(options = {}) {
     let productId = null;
 
     if (found) {
-      productId = found.id || found.M_Product_ID;
+      productId = found.id || found.M_Product_ID?.id || found.M_Product_ID;
       results.productsMap[p.sku] = productId;
       results.productsExisting++;
       results.logs.push(`ℹ️ Producto existente en ERP: [${p.sku}] ${p.name} (M_Product_ID: ${productId})`);
@@ -325,7 +325,10 @@ async function seedIdempiereCatalog(options = {}) {
     const syncResult = await syncProductsFromIdempiere({
       serverUrl,
       token,
-      proxyUrl: corsProxyUrl
+      proxyUrl: corsProxyUrl,
+      useCorsProxy,
+      corsProxyUrl,
+      clientId
     });
     results.sync = syncResult;
     results.logs.push(`✨ Datamart SQLite sincronizado: ${syncResult.itemsTotal} procesados.`);

@@ -290,6 +290,11 @@ npm run build:admin
    - Mantener el selector y soporte de Proxy CORS configurable para garantizar que los entornos de prueba contra servidores remotos o locales sin headers preflight funcionen sin bloqueo del navegador.
 5. **Sincronización de Artefactos de Build**:
    - Al ejecutar `npm run build:all` o compilar una aplicación individual para probar en el servidor Node.js en `:3000`, verificar que los archivos de `dist/` se copien en `server/public/{ecommerce|pwa|admin}`.
+6. **Convenciones OData en Consultas REST iDempiere**:
+   - En peticiones `$select` a modelos iDempiere (`m_product`, `m_product_category`, etc.), utilizar **exclusivamente nombres de columnas del Diccionario de Aplicación (`AD_Column`)** (ej. `M_Product_ID`, `M_Product_Category_ID`). **NUNCA** incluir `id` en `$select` ya que el motor de iDempiere valida contra el diccionario y rechaza con `HTTP 400 Bad Request: "id is not a valid column of table..."`.
+   - Para filtros OData sobre columnas booleanas (`IsActive`), emplear literales booleanos `true` / `false` (ej. `IsActive eq true`), nunca caracteres como `'Y'`.
+7. **Sintaxis de Sentencias Preparadas SQLite**:
+   - Encerrar los literales de cadena siempre en comillas simples (`'synced'`), reservando las comillas dobles (`"`) para identificadores de esquema/columna para evitar errores `no such column: ...`.
 
 ---
 

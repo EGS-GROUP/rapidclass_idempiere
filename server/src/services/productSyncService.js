@@ -64,6 +64,24 @@ function resolvePwaAssets(name = '', categoryId = null) {
   };
 }
 
+function buildUrl(serverUrl, endpoint, proxyUrl) {
+  let cleanServer = (serverUrl || 'https://test.idempiere.org:443').replace(/\/+$/, '');
+  let cleanEndpoint = endpoint.replace(/^\/+/, '');
+  let fullUrl = `${cleanServer}/${cleanEndpoint}`;
+
+  if (proxyUrl) {
+    let cleanProxy = proxyUrl.trim();
+    if (cleanProxy.endsWith('=')) {
+      return `${cleanProxy}${encodeURIComponent(fullUrl)}`;
+    }
+    if (cleanProxy.endsWith('/?') || cleanProxy.endsWith('?')) {
+      return `${cleanProxy}${fullUrl}`;
+    }
+    return `${cleanProxy}/${fullUrl}`;
+  }
+  return fullUrl;
+}
+
 /**
  * Synchronize products from iDempiere REST API v1 into local SQLite database.
  * 
@@ -71,12 +89,17 @@ function resolvePwaAssets(name = '', categoryId = null) {
  * @param {string} options.serverUrl - Target iDempiere REST base URL (e.g. https://test.idempiere.org:443)
  * @param {string} options.token - Bearer token obtained from /api/v1/auth/tokens
  * @param {string} [options.proxyUrl] - Optional CORS proxy
+ * @param {boolean} [options.useCorsProxy] - Flag indicating proxy usage
+ * @param {string} [options.corsProxyUrl] - Alternate name for proxyUrl
+ * @param {number} [options.clientId] - Target tenant client ID (default 11)
  * @param {Array} [options.mockProducts] - Optional fallback payload for testing/offline sync
  */
 async function syncProductsFromIdempiere(options = {}) {
   const db = getDatabase();
   const serverUrl = options.serverUrl || process.env.IDEMPIERE_SERVER_URL || 'https://test.idempiere.org:443';
   const token = options.token;
+  const proxyUrl = options.proxyUrl || (options.useCorsProxy ? options.corsProxyUrl : null);
+  const clientId = options.clientId || 11;
 
   let erpProducts = [];
   let pricesMap = new Map();
@@ -85,9 +108,9 @@ async function syncProductsFromIdempiere(options = {}) {
     if (options.mockProducts && Array.isArray(options.mockProducts)) {
       erpProducts = options.mockProducts;
     } else if (token) {
-      // 1. Fetch products from iDempiere REST v1
-      const normalizedBase = serverUrl.replace(/\/+$/, '');
-      const productsUrl = `${normalizedBase}/api/v1/models/m_product?$filter=IsActive eq 'Y'&$select=id,Value,Name,Description,C_UOM_ID,M_Product_Category_ID`;
+      // 1. Fetch products from iDempiere REST v1 using official dictionary column names
+      const endpoint = `api/v1/models/m_product?$filter=IsActive eq true and AD_Client_ID eq ${clientId}&$select=M_Product_ID,Value,Name,Description,C_UOM_ID,M_Product_Category_ID`;
+      const productsUrl = buildUrl(serverUrl, endpoint, proxyUrl);
 
       console.log(`📡 [Sync ERP] Consultando iDempiere REST: ${productsUrl}`);
 
@@ -98,7 +121,15 @@ async function syncProductsFromIdempiere(options = {}) {
 
       const res = await fetch(productsUrl, { headers });
       if (!res.ok) {
-        throw new Error(`Error en API iDempiere: HTTP ${res.status} ${res.statusText}`);
+        const errText = await res.text().catch(() => '');
+        let detail = res.statusText;
+        try {
+          const parsed = JSON.parse(errText);
+          detail = parsed.detail || parsed.message || detail;
+        } catch {
+          if (errText) detail = errText.slice(0, 150);
+        }
+        throw new Error(`Error en API iDempiere: HTTP ${res.status} - ${detail}`);
       }
 
       const body = await res.json();
@@ -106,7 +137,8 @@ async function syncProductsFromIdempiere(options = {}) {
 
       // 2. Fetch prices (optional M_ProductPrice)
       try {
-        const pricesUrl = `${normalizedBase}/api/v1/models/m_productprice?$select=M_Product_ID,PriceStd,PriceList`;
+        const priceEndpoint = `api/v1/models/m_productprice?$select=M_Product_ID,PriceStd,PriceList`;
+        const pricesUrl = buildUrl(serverUrl, priceEndpoint, proxyUrl);
         const pRes = await fetch(pricesUrl, { headers });
         if (pRes.ok) {
           const pBody = await pRes.json();
@@ -147,6 +179,7 @@ async function syncProductsFromIdempiere(options = {}) {
 
     const updateStmt = db.prepare(`
       UPDATE products SET
+        idempiere_product_id = COALESCE(idempiere_product_id, ?),
         erp_name = ?,
         price = COALESCE(?, price),
         price_list = COALESCE(?, price_list),
@@ -182,7 +215,7 @@ async function syncProductsFromIdempiere(options = {}) {
 
         if (existing) {
           // UPDATE: Preserve all PWA local images & marketing fields!
-          updateStmt.run(erpName, price, priceList, existing.id);
+          updateStmt.run(erpId, erpName, price, priceList, existing.id);
           itemsUpdated++;
         } else {
           // INSERT: Generate sensible PWA defaults
